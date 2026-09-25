@@ -6,14 +6,15 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GraphCanvas extends JPanel {
-
-    public static final class PlottedFunction {
+     public static final class PlottedFunction {
         public final String text;
         public final Color color;
         public boolean error;
@@ -26,9 +27,8 @@ public class GraphCanvas extends JPanel {
     public String inputText = "";
     public boolean useDegrees = false;
     public final List<PlottedFunction> functions = new ArrayList<>();
-   public Map<Character, Double> variables = new HashMap<>();
-
-    private static final double X_MIN = -2 * Math.PI, X_MAX = 2 * Math.PI;
+    public Map<Character, Double> variables = new HashMap<>();
+    private static final double DEFAULT_X_MIN = -2 * Math.PI, DEFAULT_X_MAX = 2 * Math.PI;
 
     public GraphCanvas() {
         setBackground(Theme.DISPLAY_BG);
