@@ -5,7 +5,7 @@
 * History → recall — clicking a past history entry re-loads it into the display for editing/re-running. You already have the list built; this just wires a click listener. ✔️
 * +/− (sign toggle) and % buttons — real calculators have both; right now negation only works by typing - at the start. (fix the UI of the DEL btn) ✔️
 * Click-to-copy result — copy the display value to the clipboard. Trivial with Toolkit.getDefaultToolkit().getSystemClipboard(). (run the program and fix the bug) ✔️
-* Multiple functions on one graph — plot f1(X), f2(X) overlaid in different colors, e.g. to compare a function against its derivative. This is the single most "wow" upgrade for GRAPH mode. (test the feature )
+* Multiple functions on one graph — plot f1(X), f2(X) overlaid in different colors, e.g. to compare a function against its derivative. This is the single most "wow" upgrade for GRAPH mode. ✔️
 * Zoom & pan — right now the X range is hardcoded to -2π..2π. Mouse wheel to zoom, drag to pan, would make it actually usable for exploring a function instead of just previewing it.
 * Trace/cursor mode — click a point on the curve, see its (x, y) coordinates. Common on real graphing calculators, and reuses your existing sampling logic.
 * Bring MATRIX to life — same pattern as the ALPHA fix: right now it's just a static label with zero function. A basic matrix mode (2×2/3×3 entry, add/multiply/determinant) would be a genuinely impressive addition and mirrors work you've already done.

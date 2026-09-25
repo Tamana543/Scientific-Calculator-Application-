@@ -1,5 +1,3 @@
-
-
 import javax.swing.JPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -14,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphCanvas extends JPanel {
-   public static final class PlottedFunction {
+
+    public static final class PlottedFunction {
         public final String text;
         public final Color color;
         public boolean error;
@@ -27,7 +26,7 @@ public class GraphCanvas extends JPanel {
     public String inputText = "";
     public boolean useDegrees = false;
     public final List<PlottedFunction> functions = new ArrayList<>();
-     public Map<Character, Double> variables = new HashMap<>();
+   public Map<Character, Double> variables = new HashMap<>();
 
     private static final double X_MIN = -2 * Math.PI, X_MAX = 2 * Math.PI;
 
@@ -53,7 +52,7 @@ public class GraphCanvas extends JPanel {
             g2.dispose();
             return;
         }
-    double[][] allYs = new double[functions.size()][];
+        double[][] allYs = new double[functions.size()][];
         double yMin = Double.POSITIVE_INFINITY, yMax = Double.NEGATIVE_INFINITY;
         boolean anyValid = false;
         for (int i = 0; i < functions.size(); i++) {
@@ -94,7 +93,6 @@ public class GraphCanvas extends JPanel {
         int zeroYpix = (int) (h - (0 - yMin) / (yMax - yMin) * h);
         if (zeroXpix >= 0 && zeroXpix <= w) g2.drawLine(zeroXpix, 0, zeroXpix, h);
         if (zeroYpix >= 0 && zeroYpix <= h) g2.drawLine(0, zeroYpix, w, zeroYpix);
-
         g2.setStroke(new BasicStroke(2.2f));
         for (int i = 0; i < functions.size(); i++) {
             PlottedFunction pf = functions.get(i);
@@ -109,13 +107,21 @@ public class GraphCanvas extends JPanel {
                 if (prevX != null) g2.drawLine(prevX, prevY, px, py);
                 prevX = px; prevY = py;
             }
-        }g2.setFont(new Font("Serif", Font.PLAIN, 12));
+        }
+        g2.setFont(new Font("Serif", Font.PLAIN, 12));
         int ly = 16;
         for (PlottedFunction pf : functions) {
             g2.setColor(pf.error ? Theme.TEXT_DIM : pf.color);
             String label = "f(x) = " + CalcUtils.prettyPrint(pf.text) + (pf.error ? "  (error)" : "");
             g2.drawString(label, 10, ly);
             ly += 15;
+        }
+        if (!inputText.isEmpty()) {
+            g2.setFont(new Font("Serif", Font.BOLD, 16));
+            g2.setColor(Theme.GOLD_BRIGHT);
+            String typing = "f(X) = " + inputText;
+            FontMetrics tfm = g2.getFontMetrics();
+            g2.drawString(typing, w - tfm.stringWidth(typing) - 10, h - 10);
         }
         g2.dispose();
     }
