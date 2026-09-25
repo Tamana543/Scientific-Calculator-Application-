@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphCanvas extends JPanel {
-   public static final class PlottedFunction {
+    public static final class PlottedFunction {
         public final String text;
         public final Color color;
         public boolean error;
@@ -23,19 +23,30 @@ public class GraphCanvas extends JPanel {
             this.color = color;
         }
     }
+    public static final class TracePoint {
+        public final double x, y;
+        public final Color color;
+        public TracePoint(double x, double y, Color color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+        }
+    }
 
     public String inputText = "";
+    public TracePoint tracePoint = null;
     public boolean useDegrees = false;
-     public final List<PlottedFunction> functions = new ArrayList<>();
+    public final List<PlottedFunction> functions = new ArrayList<>();
     public Map<Character, Double> variables = new HashMap<>();
 
     private static final double DEFAULT_X_MIN = -2 * Math.PI, DEFAULT_X_MAX = 2 * Math.PI;
     private double xMin = DEFAULT_X_MIN, xMax = DEFAULT_X_MAX;
-    private static final double MIN_SPAN = 0.02, MAX_SPAN = 2000;
+   private static final double MIN_SPAN = 0.02, MAX_SPAN = 2000;
+    private double lastYMin = Double.NaN, lastYMax = Double.NaN;
 
     public GraphCanvas() {
         setBackground(Theme.DISPLAY_BG);
-         MouseAdapter panAndReset = new MouseAdapter() {
+        MouseAdapter panAndReset = new MouseAdapter() {
             private int lastX;
             @Override public void mousePressed(MouseEvent e) { lastX = e.getX(); }
             @Override public void mouseDragged(MouseEvent e) {
@@ -49,7 +60,8 @@ public class GraphCanvas extends JPanel {
                 repaint();
             }
             @Override public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) resetView(); 
+                if (e.getClickCount() == 2) resetView(); // double-click: back to the default window
+                else if (e.getClickCount() == 1) handleTraceClick(e.getX(), e.getY());
             }
         };
         addMouseListener(panAndReset);
@@ -156,6 +168,7 @@ public class GraphCanvas extends JPanel {
             g2.drawString(label, 10, ly);
             ly += 15;
         }
+        
         if (!inputText.isEmpty()) {
             g2.setFont(new Font("Serif", Font.BOLD, 16));
             g2.setColor(Theme.GOLD_BRIGHT);
