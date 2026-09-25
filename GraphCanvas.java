@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphCanvas extends JPanel {
-     public static final class PlottedFunction {
+   public static final class PlottedFunction {
         public final String text;
         public final Color color;
         public boolean error;
@@ -26,12 +26,52 @@ public class GraphCanvas extends JPanel {
 
     public String inputText = "";
     public boolean useDegrees = false;
-    public final List<PlottedFunction> functions = new ArrayList<>();
+     public final List<PlottedFunction> functions = new ArrayList<>();
     public Map<Character, Double> variables = new HashMap<>();
+
     private static final double DEFAULT_X_MIN = -2 * Math.PI, DEFAULT_X_MAX = 2 * Math.PI;
+    private double xMin = DEFAULT_X_MIN, xMax = DEFAULT_X_MAX;
+    private static final double MIN_SPAN = 0.02, MAX_SPAN = 2000;
 
     public GraphCanvas() {
         setBackground(Theme.DISPLAY_BG);
+         MouseAdapter panAndReset = new MouseAdapter() {
+            private int lastX;
+            @Override public void mousePressed(MouseEvent e) { lastX = e.getX(); }
+            @Override public void mouseDragged(MouseEvent e) {
+                if (getWidth() <= 0) return;
+                int dx = e.getX() - lastX;
+                lastX = e.getX();
+                double dataPerPixel = (xMax - xMin) / getWidth();
+                double shift = -dx * dataPerPixel;
+                xMin += shift;
+                xMax += shift;
+                repaint();
+            }
+            @Override public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) resetView(); 
+            }
+        };
+        addMouseListener(panAndReset);
+        addMouseMotionListener(panAndReset);
+        addMouseWheelListener(e -> {
+            if (getWidth() <= 0) return;
+            double dataPerPixel = (xMax - xMin) / getWidth();
+            double xAtCursor = xMin + e.getX() * dataPerPixel;
+            double factor = e.getWheelRotation() < 0 ? 0.9 : 1.1; // scroll up/away = zoom in
+            double newMin = xAtCursor - (xAtCursor - xMin) * factor;
+            double newMax = xAtCursor + (xMax - xAtCursor) * factor;
+            double newSpan = newMax - newMin;
+            if (newSpan < MIN_SPAN || newSpan > MAX_SPAN) return;
+            xMin = newMin;
+            xMax = newMax;
+            repaint();
+        });
+    }
+    public void resetView() {
+        xMin = DEFAULT_X_MIN;
+        xMax = DEFAULT_X_MAX;
+        repaint();
     }
 
     @Override
@@ -57,7 +97,7 @@ public class GraphCanvas extends JPanel {
         boolean anyValid = false;
         for (int i = 0; i < functions.size(); i++) {
             PlottedFunction pf = functions.get(i);
-            double[] ys = Evaluator.sampleFunction(pf.text, useDegrees, X_MIN, X_MAX, w, variables);
+            double[] ys = Evaluator.sampleFunction(pf.text, useDegrees, xMin, xMax, w, variables);
             allYs[i] = ys;
             boolean curveValid = false;
             for (double y : ys) {
@@ -89,7 +129,7 @@ public class GraphCanvas extends JPanel {
 
         // axes
         g2.setColor(new Color(110, 105, 90));
-        int zeroXpix = (int) ((0 - X_MIN) / (X_MAX - X_MIN) * w);
+        int zeroXpix = (int) ((0 - xMin) / (xMax - xMin) * w);
         int zeroYpix = (int) (h - (0 - yMin) / (yMax - yMin) * h);
         if (zeroXpix >= 0 && zeroXpix <= w) g2.drawLine(zeroXpix, 0, zeroXpix, h);
         if (zeroYpix >= 0 && zeroYpix <= h) g2.drawLine(0, zeroYpix, w, zeroYpix);
