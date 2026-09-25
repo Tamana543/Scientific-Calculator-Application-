@@ -19,8 +19,6 @@ public class Calculator extends JFrame {
     private double memory = 0, lastAnswer = 0;
     private boolean historyVisible = true;
     private final List<String> history = new ArrayList<>();
-    /** Stored A-F variables (ALPHA+digit to recall, SHIFT+ALPHA+digit to store). Shared by
-     *  reference with graphCanvas.variables so plotted functions see the latest values too. */
     private final Map<Character, Double> variables = new HashMap<>();
     private JTextField compDisplay;
     private GraphCanvas graphCanvas;
@@ -74,20 +72,10 @@ public class Calculator extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
-
-    //  Keyboard input: lets every key below drive the same onButton()/onExe() logic the
-    //  on-screen buttons use, so typing works exactly like clicking - including ALPHA/SHIFT
-    //  interactions, since digit key presses go through the real onButton() switch.
     private void installKeyBindings() {
         JComponent root = getRootPane();
-        // WHEN_IN_FOCUSED_WINDOW: fires regardless of which button (if any) currently has
-        // keyboard focus, as long as the calculator window itself is the active window.
         InputMap im = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = root.getActionMap();
-
-        // Digits: both top-row number keys and numpad, each bound to the same cmd string
-        // used by the on-screen digit buttons ("0".."9") - this also means typing a digit
-        // while ALPHA is armed recalls/stores a variable, exactly like clicking would.
         for (int d = 0; d <= 9; d++) {
             String digit = String.valueOf(d);
             bindKey(im, am, KeyStroke.getKeyStroke((char) ('0' + d)), "kbd.digit" + d, () -> simulateButton(digit));
@@ -335,9 +323,6 @@ private void loadHistoryEntry(String rawText) {
     String right = rawText.substring(eq + 3);
 
     if (left.equals("f(X)")) {
-        // Loads the text back into the input for editing; the curve(s) already on the graph
-        // are untouched. Pressing EXE again adds this (possibly edited) version as a new curve
-        // rather than replacing the original - consistent with EXE always adding in GRAPH mode.
         funcExpr.setLength(0);
         funcExpr.append(unPrettyPrint(right));
         setMode(true);
@@ -389,8 +374,6 @@ private void loadHistoryEntry(String rawText) {
             RoundedButton b;
             if (label.equals("DEL")) {
                 b = new RoundedButton(label, 10, Theme.KEY_BG, new Color(230, 120, 110), Theme.DEL_BORDER);
-                // Smaller, non-italic font so "DEL" fits comfortably even in an 8-column row,
-                // instead of needing a whole extra row (which pushed the window height too tall).
                 b.setFont(new Font("SansSerif", Font.BOLD, 10));
             } else {
                 b = new RoundedButton(label, 10, Theme.KEY_BG, Theme.GOLD, null);
@@ -541,13 +524,11 @@ private void loadHistoryEntry(String rawText) {
                 }
             }
             case "AC" -> {
-                // In GRAPH mode: first AC clears whatever's currently being typed (normal
-                // behavior); a second AC, pressed with nothing left to clear, wipes every
-                // plotted curve - a double-tap-to-clear-all pattern.
                 boolean bufWasEmpty = buf.length() == 0;
                 buf.setLength(0);
                 if (isGraphMode && bufWasEmpty) {
                     graphCanvas.functions.clear();
+                    graphCanvas.resetView(); // also un-zoom/un-pan back to the default window
                 }
                 refreshDisplay();
             }
@@ -614,10 +595,6 @@ private void applyPercent() {
     buf.replace(start, s.length(), "(" + s.substring(start) + "/100)");
     refreshDisplay();
 }
-
-    /** Evaluates the current buffer (or falls back to lastAnswer if empty) and stores the result
-     *  into the given A-F variable slot. Called from ALPHA+SHIFT+digit. COMP mode only - a graph
-     *  function has no single value to store. */
     private void storeVariable(char letter, StringBuilder buf) {
         double value;
         try {
@@ -664,14 +641,10 @@ private void applyPercent() {
  
     private void plotFunction() {
         if (funcExpr.length() == 0) return;
-        // Adds a new curve rather than replacing the old one, so f1(X), f2(X), etc. all stay
-        // visible together. Color cycles through Theme.GRAPH_COLORS by plot order.
         Color color = Theme.GRAPH_COLORS[graphCanvas.functions.size() % Theme.GRAPH_COLORS.length];
         graphCanvas.functions.add(new GraphCanvas.PlottedFunction(funcExpr.toString(), color));
         history.add("f(X) = " + CalcUtils.prettyPrint(funcExpr.toString()));
         updateHistoryPanel();
-        // Clear the input so the next thing typed starts a fresh function instead of editing
-        // the one that was just plotted - the plotted curve itself is unaffected by this.
         funcExpr.setLength(0);
         graphCanvas.repaint();
         refreshDisplay();
@@ -692,7 +665,7 @@ private void applyPercent() {
             expr.setLength(0);
         }
     }
-      // rmdir /s /q Calculator spring 
+      // rmdir /s /q Calculator
     // javac -d . CalculatorApp\*.java
     // "C:\Program Files\Java\jdk-19\bin\jar" cvfm input_dir\Calculator.jar manifest.txt CalculatorApp
     // "C:\Program Files\Java\jdk-19\bin\jpackage" --input input_dir --name "Calculator" --main-jar Calculator.jar --main-class CalculatorApp.Calculator --type app-image
