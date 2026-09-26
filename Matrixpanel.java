@@ -133,4 +133,34 @@ public class MatrixPanel extends JPanel {
             resultLabel.setText("Error: every cell needs a number.");
         }
     }
+    private void computeDet(JTextField[][] cells, char which) {
+        try {
+            double[][] m = readMatrix(cells);
+            double d = determinant(m);
+            resultLabel.setText("det(" + which + ") = " + CalcUtils.trimZero(d));
+        } catch (NumberFormatException ex) {
+            resultLabel.setText("Error: every cell needs a number.");
+        }
+    }
+ 
+    private String formatMatrixHtml(double[][] m) {
+        StringBuilder sb = new StringBuilder();
+        for (double[] row : m) {
+            sb.append("[ ");
+            for (int c = 0; c < row.length; c++) {
+                sb.append(CalcUtils.trimZero(row[c]));
+                if (c < row.length - 1) sb.append(", ");
+            }
+            sb.append(" ]<br>");
+        }
+        return sb.toString();
+    }
+     private static double[][] add(double[][] a, double[][] b) {
+        int n = a.length;
+        double[][] r = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) r[i][j] = a[i][j] + b[i][j];
+        }
+        return r;
+    }
 }
