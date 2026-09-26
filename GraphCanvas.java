@@ -83,7 +83,47 @@ public class GraphCanvas extends JPanel {
     public void resetView() {
         xMin = DEFAULT_X_MIN;
         xMax = DEFAULT_X_MAX;
+        tracePoint = null;
         repaint();
+    }
+    private void handleTraceClick(int px, int py) {
+        if (functions.isEmpty() || getWidth() <= 0 || !Double.isFinite(lastYMin) || !Double.isFinite(lastYMax)) {
+            tracePoint = null;
+            repaint();
+            return;
+        }
+        int w = getWidth(), h = getHeight();
+        double dataX = xMin + px * (xMax - xMin) / w;
+
+        PlottedFunction nearest = null;
+        double nearestY = 0, nearestPixelDist = Double.MAX_VALUE;
+        for (PlottedFunction pf : functions) {
+            double y;
+            try {
+                y = new Evaluator(pf.text, useDegrees, dataX, variables).evaluate();
+            } catch (Exception ex) {
+                continue;
+            }
+            if (!Double.isFinite(y)) continue;
+            int curvePy = (int) (h - (y - lastYMin) / (lastYMax - lastYMin) * h);
+            double dist = Math.abs(curvePy - py);
+            if (dist < nearestPixelDist) {
+                nearestPixelDist = dist;
+                nearest = pf;
+                nearestY = y;
+            }
+        }
+        tracePoint = (nearest != null && nearestPixelDist <= 40)
+            ? new TracePoint(dataX, nearestY, nearest.color)
+            : null;
+        repaint();
+    }
+    private static String formatAxisValue(double v) {
+        double av = Math.abs(v);
+        if (av < 1e-9) return "0";
+        int decimals = av < 1 ? 2 : (av < 10 ? 1 : 0);
+        String s = String.format("%." + decimals + "f", v);
+        return s.equals("-0") ? "0" : s;
     }
 
     @Override
@@ -133,6 +173,8 @@ public class GraphCanvas extends JPanel {
         if (yMax - yMin < 1e-6) { yMin -= 1; yMax += 1; }
         double pad = (yMax - yMin) * 0.1;
         yMin -= pad; yMax += pad;
+        lastYMin = yMin;
+        lastYMax = yMax;
 
         // grid
         g2.setColor(new Color(50, 52, 60));
@@ -145,6 +187,21 @@ public class GraphCanvas extends JPanel {
         int zeroYpix = (int) (h - (0 - yMin) / (yMax - yMin) * h);
         if (zeroXpix >= 0 && zeroXpix <= w) g2.drawLine(zeroXpix, 0, zeroXpix, h);
         if (zeroYpix >= 0 && zeroYpix <= h) g2.drawLine(0, zeroYpix, w, zeroYpix);
+        g2.setFont(new Font("SansSerif", Font.PLAIN, 9));
+        g2.setColor(Theme.TEXT_DIM);
+        FontMetrics afm = g2.getFontMetrics();
+        for (int gx = 0; gx <= 10; gx += 2) {
+            String label = formatAxisValue(xMin + gx / 10.0 * (xMax - xMin));
+            int lx = gx * w / 10;
+            int drawX = Math.max(2, Math.min(w - afm.stringWidth(label) - 2, lx - afm.stringWidth(label) / 2));
+            g2.drawString(label, drawX, h - 3);
+        }
+        for (int gy = 2; gy <= 6; gy += 2) {
+            String label = formatAxisValue(yMax - gy / 6.0 * (yMax - yMin));
+            int ly0 = gy * h / 6;
+            g2.drawString(label, 2, Math.min(h - 2, ly0 + 4));
+        }
+
         g2.setStroke(new BasicStroke(2.2f));
         for (int i = 0; i < functions.size(); i++) {
             PlottedFunction pf = functions.get(i);
@@ -160,6 +217,24 @@ public class GraphCanvas extends JPanel {
                 prevX = px; prevY = py;
             }
         }
+        if (tracePoint != null) {
+            int tx = (int) ((tracePoint.x - xMin) / (xMax - xMin) * w);
+            int ty = (int) (h - (tracePoint.y - yMin) / (yMax - yMin) * h);
+            g2.setColor(Color.WHITE);
+            g2.fillOval(tx - 4, ty - 4, 8, 8);
+            g2.setColor(tracePoint.color);
+            g2.drawOval(tx - 4, ty - 4, 8, 8);
+
+            String coord = "(" + formatAxisValue(tracePoint.x) + ", " + formatAxisValue(tracePoint.y) + ")";
+            g2.setFont(new Font("SansSerif", Font.BOLD, 12));
+            FontMetrics cfm = g2.getFontMetrics();
+            int cx = tx + 8;
+            if (cx + cfm.stringWidth(coord) > w) cx = tx - cfm.stringWidth(coord) - 8;
+            int cy = (ty - 8 < 12) ? ty + 20 : ty - 8;
+            g2.setColor(Color.WHITE);
+            g2.drawString(coord, cx, cy);
+        }
+
         g2.setFont(new Font("Serif", Font.PLAIN, 12));
         int ly = 16;
         for (PlottedFunction pf : functions) {

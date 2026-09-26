@@ -666,7 +666,7 @@ private void applyPercent() {
         }
     }
       // rmdir /s /q Calculator
-    // javac -d . CalculatorApp\*.java
+    //     javac -d . *.java ,java Calculator
     // "C:\Program Files\Java\jdk-19\bin\jar" cvfm input_dir\Calculator.jar manifest.txt CalculatorApp
     // "C:\Program Files\Java\jdk-19\bin\jpackage" --input input_dir --name "Calculator" --main-jar Calculator.jar --main-class CalculatorApp.Calculator --type app-image
     // toDo : fix the funcitonality mistakes and add the hover
