@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MatrixPanel extends JPanel {
-     private int size = 2; // 2 or 3
+    private int size = 2; // 2 or 3
     private JTextField[][] cellsA, cellsB;
     private JPanel gridsRow;
     private RoundedButton twoByTwoBtn, threeByThreeBtn;
@@ -11,29 +11,34 @@ public class MatrixPanel extends JPanel {
     public MatrixPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Theme.DISPLAY_BG);
-        setBorder(BorderFactory.createEmptyBorder(6, 8, 4, 8));
+        // INCREASED: Outer padding for a less crowded UI
+        setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
  
         add(buildSizeRow());
+        add(Box.createVerticalStrut(10)); // INCREASED: Space between size selection and grids
         gridsRow = buildGridsRow();
         add(gridsRow);
-        add(Box.createVerticalStrut(4));
+        add(Box.createVerticalStrut(10)); // INCREASED: Space between grids and buttons
         add(buildOpsRow());
-        add(Box.createVerticalStrut(4));
+        add(Box.createVerticalStrut(12)); // INCREASED: Space before result text
  
         resultLabel = new JLabel("Enter values, then pick an operation.");
-        resultLabel.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        // INCREASED: Clearer typography for output display
+        resultLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
         resultLabel.setForeground(Theme.GOLD_BRIGHT);
         resultLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(resultLabel);
     }
-     public void focusFirstCell() {
+    
+    public void focusFirstCell() {
         if (cellsA != null && cellsA.length > 0) cellsA[0][0].requestFocusInWindow();
     }
-     private JPanel buildSizeRow() {
+    
+    private JPanel buildSizeRow() {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         row.setBackground(Theme.DISPLAY_BG);
-        twoByTwoBtn = smallButton("2\u00D72");
-        threeByThreeBtn = smallButton("3\u00D73");
+        twoByTwoBtn = smallButton("2×2");
+        threeByThreeBtn = smallButton("3×3");
         twoByTwoBtn.setActive(true);
         twoByTwoBtn.addActionListener(e -> setSize(2));
         threeByThreeBtn.addActionListener(e -> setSize(3));
@@ -51,12 +56,15 @@ public class MatrixPanel extends JPanel {
         gridsRow = buildGridsRow();
         add(gridsRow, idx);
         resultLabel.setText("Enter values, then pick an operation.");
+        
         revalidate();
         repaint();
+        resizeParentWindow(); // FIXED: Recalculates layout window frame sizes dynamically
     }
  
     private JPanel buildGridsRow() {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 0));
+        // INCREASED: 20px gap between Matrix A and Matrix B
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
         row.setBackground(Theme.DISPLAY_BG);
         cellsA = buildGrid();
         cellsB = buildGrid();
@@ -64,18 +72,21 @@ public class MatrixPanel extends JPanel {
         row.add(wrapGrid(cellsB));
         return row;
     }
-     private JTextField[][] buildGrid() {
+    
+    private JTextField[][] buildGrid() {
         JTextField[][] cells = new JTextField[size][size];
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
                 JTextField f = new JTextField("0");
                 f.setHorizontalAlignment(JTextField.CENTER);
-                f.setFont(new Font("Monospaced", Font.PLAIN, 11));
+                // INCREASED: Slightly larger text field fonts
+                f.setFont(new Font("Monospaced", Font.PLAIN, 12));
                 f.setBackground(Theme.KEY_BG);
                 f.setForeground(Theme.DIGIT_FG);
                 f.setCaretColor(Theme.GOLD_BRIGHT);
                 f.setBorder(BorderFactory.createLineBorder(Theme.PILL_BORDER, 1));
-                f.setPreferredSize(new Dimension(30, 22));
+                // FIXED: Enlarged cells from (30x22) to (44x28) to stop values from clip cutting
+                f.setPreferredSize(new Dimension(44, 28));
                 cells[r][c] = f;
             }
         }
@@ -83,7 +94,8 @@ public class MatrixPanel extends JPanel {
     }
  
     private JPanel wrapGrid(JTextField[][] cells) {
-        JPanel grid = new JPanel(new GridLayout(size, size, 2, 2));
+        // INCREASED: 4px padding gaps between matrix squares
+        JPanel grid = new JPanel(new GridLayout(size, size, 4, 4));
         grid.setBackground(Theme.DISPLAY_BG);
         for (JTextField[] row : cells) for (JTextField f : row) grid.add(f);
         return grid;
@@ -93,22 +105,25 @@ public class MatrixPanel extends JPanel {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         row.setBackground(Theme.DISPLAY_BG);
         row.add(opButton("A+B", e -> compute('+')));
-        row.add(opButton("A\u00D7B", e -> compute('\u00D7')));
+        row.add(opButton("A×B", e -> compute('×')));
         row.add(opButton("det(A)", e -> computeDet(cellsA, 'A')));
         row.add(opButton("det(B)", e -> computeDet(cellsB, 'B')));
         return row;
     }
-     private RoundedButton smallButton(String text) {
+    
+    private RoundedButton smallButton(String text) {
         RoundedButton b = new RoundedButton(text, 10, Theme.KEY_BG, Theme.GOLD, null);
-        b.setFont(new Font("SansSerif", Font.BOLD, 11));
-        b.setPreferredSize(new Dimension(50, 20));
+        b.setFont(new Font("SansSerif", Font.BOLD, 12));
+        // INCREASED: Slightly taller and wider buttons
+        b.setPreferredSize(new Dimension(55, 24));
         return b;
     }
  
     private RoundedButton opButton(String label, java.awt.event.ActionListener listener) {
         RoundedButton b = new RoundedButton(label, 10, Theme.KEY_BG, Theme.GOLD, null);
-        b.setFont(new Font("SansSerif", Font.BOLD, 10));
-        b.setPreferredSize(new Dimension(62, 22));
+        b.setFont(new Font("SansSerif", Font.BOLD, 11));
+        // INCREASED: Comfort dimension boundaries for operations buttons
+        b.setPreferredSize(new Dimension(68, 25));
         b.addActionListener(listener);
         return b;
     }
@@ -132,7 +147,9 @@ public class MatrixPanel extends JPanel {
         } catch (NumberFormatException ex) {
             resultLabel.setText("Error: every cell needs a number.");
         }
+        resizeParentWindow(); // FIXED: Expands popup frame safely to host the multiline matrix text
     }
+    
     private void computeDet(JTextField[][] cells, char which) {
         try {
             double[][] m = readMatrix(cells);
@@ -141,6 +158,7 @@ public class MatrixPanel extends JPanel {
         } catch (NumberFormatException ex) {
             resultLabel.setText("Error: every cell needs a number.");
         }
+        resizeParentWindow(); // FIXED: Adjusts window safely
     }
  
     private String formatMatrixHtml(double[][] m) {
@@ -155,7 +173,16 @@ public class MatrixPanel extends JPanel {
         }
         return sb.toString();
     }
-     private static double[][] add(double[][] a, double[][] b) {
+    
+    // NEW HELPER: Dynamically scales the outer modal frame when content updates
+    private void resizeParentWindow() {
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window != null) {
+            window.pack();
+        }
+    }
+    
+    private static double[][] add(double[][] a, double[][] b) {
         int n = a.length;
         double[][] r = new double[n][n];
         for (int i = 0; i < n; i++) {
@@ -163,6 +190,7 @@ public class MatrixPanel extends JPanel {
         }
         return r;
     }
+    
     private static double[][] multiply(double[][] a, double[][] b) {
         int n = a.length;
         double[][] r = new double[n][n];
@@ -175,7 +203,8 @@ public class MatrixPanel extends JPanel {
         }
         return r;
     }
-     private static double determinant(double[][] m) {
+    
+    private static double determinant(double[][] m) {
         int n = m.length;
         if (n == 1) return m[0][0];
         if (n == 2) return m[0][0] * m[1][1] - m[0][1] * m[1][0];
