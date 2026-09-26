@@ -64,4 +64,38 @@ public class MatrixPanel extends JPanel {
         row.add(wrapGrid(cellsB));
         return row;
     }
+     private JTextField[][] buildGrid() {
+        JTextField[][] cells = new JTextField[size][size];
+        for (int r = 0; r < size; r++) {
+            for (int c = 0; c < size; c++) {
+                JTextField f = new JTextField("0");
+                f.setHorizontalAlignment(JTextField.CENTER);
+                f.setFont(new Font("Monospaced", Font.PLAIN, 11));
+                f.setBackground(Theme.KEY_BG);
+                f.setForeground(Theme.DIGIT_FG);
+                f.setCaretColor(Theme.GOLD_BRIGHT);
+                f.setBorder(BorderFactory.createLineBorder(Theme.PILL_BORDER, 1));
+                f.setPreferredSize(new Dimension(30, 22));
+                cells[r][c] = f;
+            }
+        }
+        return cells;
+    }
+ 
+    private JPanel wrapGrid(JTextField[][] cells) {
+        JPanel grid = new JPanel(new GridLayout(size, size, 2, 2));
+        grid.setBackground(Theme.DISPLAY_BG);
+        for (JTextField[] row : cells) for (JTextField f : row) grid.add(f);
+        return grid;
+    }
+ 
+    private JPanel buildOpsRow() {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        row.setBackground(Theme.DISPLAY_BG);
+        row.add(opButton("A+B", e -> compute('+')));
+        row.add(opButton("A\u00D7B", e -> compute('\u00D7')));
+        row.add(opButton("det(A)", e -> computeDet(cellsA, 'A')));
+        row.add(opButton("det(B)", e -> computeDet(cellsB, 'B')));
+        return row;
+    }
 }
