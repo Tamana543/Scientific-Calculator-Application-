@@ -72,6 +72,10 @@ public class Calculator extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
+
+    //  Keyboard input: lets every key below drive the same onButton()/onExe() logic the
+    //  on-screen buttons use, so typing works exactly like clicking - including ALPHA/SHIFT
+    //  interactions, since digit key presses go through the real onButton() switch.
     private void installKeyBindings() {
         JComponent root = getRootPane();
         // WHEN_IN_FOCUSED_WINDOW: fires regardless of which button (if any) currently has
@@ -80,8 +84,8 @@ public class Calculator extends JFrame {
         ActionMap am = root.getActionMap();
 
         // Digits: both top-row number keys and numpad, each bound to the same cmd string
-        // used by the on-screen digit buttons ("0".."9") typing a digit
-        // while ALPHA is armed recalls/stores a variable, clicking would.
+        // used by the on-screen digit buttons ("0".."9") - this also means typing a digit
+        // while ALPHA is armed recalls/stores a variable, exactly like clicking would.
         for (int d = 0; d <= 9; d++) {
             String digit = String.valueOf(d);
             bindKey(im, am, KeyStroke.getKeyStroke((char) ('0' + d)), "kbd.digit" + d, () -> simulateButton(digit));
@@ -134,7 +138,11 @@ public class Calculator extends JFrame {
         angleValueLabel = smallLabel("RAD");
         JLabel deg = smallLabel("DEG");
         JLabel matrix = smallLabel("MATRIX");
-        matrix.setForeground(Theme.TEXT_DIM);
+        matrix.setForeground(Theme.GOLD); // gold instead of dim - signals it's actually clickable now
+        matrix.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        matrix.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) { openMatrixDialog(); }
+        });
         right.add(angleValueLabel);
         right.add(deg);
         right.add(matrix);
@@ -496,6 +504,22 @@ private void loadHistoryEntry(String rawText) {
         flash.setRepeats(false);
         flash.start();
     }
+
+    /** Opens MATRIX mode as its own small dialog rather than a third tab inside the main
+     *  window - deliberately kept separate so it can never affect the main calculator's
+     *  already-tight fixed layout (see the earlier zoom/pan-era lesson about window height
+     *  getting cut off). A fresh MatrixPanel each time gives a clean slate on every open. */
+    private void openMatrixDialog() {
+        MatrixPanel panel = new MatrixPanel();
+        JDialog dialog = new JDialog(this, "Matrix Mode", true);
+        dialog.getContentPane().setBackground(Theme.DISPLAY_BG);
+        dialog.getContentPane().add(panel);
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(this);
+        SwingUtilities.invokeLater(panel::focusFirstCell);
+        dialog.setVisible(true);
+    }
  
     private StringBuilder active() { return isGraphMode ? funcExpr : expr; }
  
@@ -600,7 +624,7 @@ private void loadHistoryEntry(String rawText) {
     }
     refreshDisplay();
 }
-    private void applyPercent() {
+private void applyPercent() {
     StringBuilder buf = active();
     String s = buf.toString();
     int start = s.length();
@@ -609,6 +633,10 @@ private void loadHistoryEntry(String rawText) {
     buf.replace(start, s.length(), "(" + s.substring(start) + "/100)");
     refreshDisplay();
 }
+
+    /** Evaluates the current buffer (or falls back to lastAnswer if empty) and stores the result
+     *  into the given A-F variable slot. Called from ALPHA+SHIFT+digit. COMP mode only - a graph
+     *  function has no single value to store. */
     private void storeVariable(char letter, StringBuilder buf) {
         double value;
         try {
@@ -659,7 +687,6 @@ private void loadHistoryEntry(String rawText) {
         // visible together. Color cycles through Theme.GRAPH_COLORS by plot order.
         Color color = Theme.GRAPH_COLORS[graphCanvas.functions.size() % Theme.GRAPH_COLORS.length];
         graphCanvas.functions.add(new GraphCanvas.PlottedFunction(funcExpr.toString(), color));
-        graphCanvas.tracePoint = null; // a stale trace from before this new curve would be confusing
         history.add("f(X) = " + CalcUtils.prettyPrint(funcExpr.toString()));
         updateHistoryPanel();
         // Clear the input so the next thing typed starts a fresh function instead of editing
@@ -684,7 +711,7 @@ private void loadHistoryEntry(String rawText) {
             expr.setLength(0);
         }
     }
-      // rmdir /s /q Calculator
+    // rmdir /s /q Calculator
     //     javac -d . *.java ,java Calculator
     // "C:\Program Files\Java\jdk-19\bin\jar" cvfm input_dir\Calculator.jar manifest.txt CalculatorApp
     // "C:\Program Files\Java\jdk-19\bin\jpackage" --input input_dir --name "Calculator" --main-jar Calculator.jar --main-class CalculatorApp.Calculator --type app-image
