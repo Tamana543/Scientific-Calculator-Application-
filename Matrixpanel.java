@@ -163,4 +163,44 @@ public class MatrixPanel extends JPanel {
         }
         return r;
     }
+    private static double[][] multiply(double[][] a, double[][] b) {
+        int n = a.length;
+        double[][] r = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                double sum = 0;
+                for (int k = 0; k < n; k++) sum += a[i][k] * b[k][j];
+                r[i][j] = sum;
+            }
+        }
+        return r;
+    }
+     private static double determinant(double[][] m) {
+        int n = m.length;
+        if (n == 1) return m[0][0];
+        if (n == 2) return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+        double det = 0;
+        for (int col = 0; col < n; col++) {
+            double sign = (col % 2 == 0) ? 1 : -1;
+            det += sign * m[0][col] * determinant(minor(m, 0, col));
+        }
+        return det;
+    }
+ 
+    private static double[][] minor(double[][] m, int skipRow, int skipCol) {
+        int n = m.length;
+        double[][] result = new double[n - 1][n - 1];
+        int ri = 0;
+        for (int r = 0; r < n; r++) {
+            if (r == skipRow) continue;
+            int ci = 0;
+            for (int c = 0; c < n; c++) {
+                if (c == skipCol) continue;
+                result[ri][ci] = m[r][c];
+                ci++;
+            }
+            ri++;
+        }
+        return result;
+    }
 }
