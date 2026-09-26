@@ -98,4 +98,39 @@ public class MatrixPanel extends JPanel {
         row.add(opButton("det(B)", e -> computeDet(cellsB, 'B')));
         return row;
     }
+     private RoundedButton smallButton(String text) {
+        RoundedButton b = new RoundedButton(text, 10, Theme.KEY_BG, Theme.GOLD, null);
+        b.setFont(new Font("SansSerif", Font.BOLD, 11));
+        b.setPreferredSize(new Dimension(50, 20));
+        return b;
+    }
+ 
+    private RoundedButton opButton(String label, java.awt.event.ActionListener listener) {
+        RoundedButton b = new RoundedButton(label, 10, Theme.KEY_BG, Theme.GOLD, null);
+        b.setFont(new Font("SansSerif", Font.BOLD, 10));
+        b.setPreferredSize(new Dimension(62, 22));
+        b.addActionListener(listener);
+        return b;
+    }
+ 
+    private double[][] readMatrix(JTextField[][] cells) {
+        double[][] m = new double[size][size];
+        for (int r = 0; r < size; r++) {
+            for (int c = 0; c < size; c++) {
+                m[r][c] = Double.parseDouble(cells[r][c].getText().trim());
+            }
+        }
+        return m;
+    }
+ 
+    private void compute(char op) {
+        try {
+            double[][] a = readMatrix(cellsA);
+            double[][] b = readMatrix(cellsB);
+            double[][] result = (op == '+') ? add(a, b) : multiply(a, b);
+            resultLabel.setText("<html>" + formatMatrixHtml(result) + "</html>");
+        } catch (NumberFormatException ex) {
+            resultLabel.setText("Error: every cell needs a number.");
+        }
+    }
 }
