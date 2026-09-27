@@ -1,5 +1,4 @@
-* Fix the responsive feature 
-* byild a memoriable feature for Alpha func ✔️
+ * byild a memoriable feature for Alpha func ✔️
 * Design store and recalling functions by Alpha and Shift btns (add small deisplay in btns working with shift and alpha) ✔️
 * Keyboard input — right now everything requires mouse clicks. A KeyListener mapping digit/operator keys (and Enter → EXE, Backspace → DEL, Esc → AC) would make this feel like a real app instead of a demo, and it's a contained change. ✔️
 * History → recall — clicking a past history entry re-loads it into the display for editing/re-running. You already have the list built; this just wires a click listener. ✔️
