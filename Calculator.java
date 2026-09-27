@@ -32,7 +32,7 @@ public class Calculator extends JFrame {
      public Calculator() {
         setTitle("Scientific Graphing Calculator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         getContentPane().setBackground(Theme.APP_BG);
  
         JPanel wrapper = new JPanel(new BorderLayout());
@@ -70,6 +70,7 @@ public class Calculator extends JFrame {
         updateHistoryPanel();
         installKeyBindings();
         pack();
+       setMinimumSize(getSize());
         setLocationRelativeTo(null);
     }
 
@@ -195,7 +196,7 @@ public class Calculator extends JFrame {
         cardLayout = new CardLayout();
         displayContainer = new JPanel(cardLayout);
         displayContainer.setPreferredSize(new Dimension(420, 170));
-        displayContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 170));
+        displayContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
  
         compDisplay = new JTextField();
         compDisplay.setFont(new Font("Serif", Font.BOLD, 24));
@@ -711,8 +712,8 @@ private void applyPercent() {
             expr.setLength(0);
         }
     }
-    // rmdir /s /q Calculator
-    //     javac -d . *.java ,java Calculator
+      // rmdir /s /q Calculator
+    //   javac -d . *.java ,java Calculator
     // "C:\Program Files\Java\jdk-19\bin\jar" cvfm input_dir\Calculator.jar manifest.txt CalculatorApp
     // "C:\Program Files\Java\jdk-19\bin\jpackage" --input input_dir --name "Calculator" --main-jar Calculator.jar --main-class CalculatorApp.Calculator --type app-image
     // toDo : fix the funcitonality mistakes and add the hover
