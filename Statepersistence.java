@@ -11,24 +11,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
-// Logic 
 /**
  * Saves and restores the calculator's memory value, A-F variables, and calculation history
  * between runs, using a small .properties file in the user's home directory (works no matter
  * where the app is installed, unlike writing next to the jar - Program Files, for instance,
  * often isn't writable by a normal user).
- * Saving happens via a JVM shutdown hook , which fires on
+ * Saving happens via a JVM shutdown hook, which fires on
  * any normal exit path - closing the window, closing from the taskbar, etc. It does NOT cover
  * a hard crash or the process being killed; that's an accepted gap for "save on close", not an
  * attempt at continuous autosave.
  */
-public class Statepersistence {
-      private static final File STATE_FILE =
+public class StatePersistence { // <-- FIXED CASE-SENSITIVITY HERE
+    private static final File STATE_FILE =
         new File(System.getProperty("user.home"), ".graphing_calculator_state.properties");
  
     private StatePersistence() {} // static utility only
-     public static void save(Map<Character, Double> variables, double memory, List<String> history) {
+    
+    public static void save(Map<Character, Double> variables, double memory, List<String> history) {
         Properties p = new Properties();
         p.setProperty("memory", String.valueOf(memory));
         for (Map.Entry<Character, Double> e : variables.entrySet()) {
@@ -44,7 +43,8 @@ public class Statepersistence {
             // best-effort, see class comment
         }
     }
-     public static double load(Map<Character, Double> variables, List<String> history) {
+    
+    public static double load(Map<Character, Double> variables, List<String> history) {
         if (!STATE_FILE.exists()) return 0.0;
  
         Properties p = new Properties();
