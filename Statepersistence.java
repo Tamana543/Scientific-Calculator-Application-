@@ -44,4 +44,43 @@ public class Statepersistence {
             // best-effort, see class comment
         }
     }
+     public static double load(Map<Character, Double> variables, List<String> history) {
+        if (!STATE_FILE.exists()) return 0.0;
+ 
+        Properties p = new Properties();
+        try (Reader r = new InputStreamReader(new FileInputStream(STATE_FILE), StandardCharsets.UTF_8)) {
+            p.load(r);
+        } catch (IOException ex) {
+            return 0.0;
+        }
+ 
+        double memory = 0.0;
+        try {
+            memory = Double.parseDouble(p.getProperty("memory", "0"));
+        } catch (NumberFormatException ignored) {
+            // leave memory at 0.0
+        }
+ 
+        for (char c = 'A'; c <= 'F'; c++) {
+            String v = p.getProperty("variable." + c);
+            if (v == null) continue;
+            try {
+                variables.put(c, Double.parseDouble(v));
+            } catch (NumberFormatException ignored) {
+                // skip just this one variable rather than aborting the whole load
+            }
+        }
+ 
+        try {
+            int count = Integer.parseInt(p.getProperty("history.count", "0"));
+            for (int i = 0; i < count; i++) {
+                String entry = p.getProperty("history." + i);
+                if (entry != null) history.add(entry);
+            }
+        } catch (NumberFormatException ignored) {
+            // skip restoring history rather than aborting the whole load
+        }
+ 
+        return memory;
+    }
 }
