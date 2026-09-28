@@ -24,5 +24,24 @@ import java.util.Properties;
  * attempt at continuous autosave.
  */
 public class Statepersistence {
-     
+      private static final File STATE_FILE =
+        new File(System.getProperty("user.home"), ".graphing_calculator_state.properties");
+ 
+    private StatePersistence() {} // static utility only
+     public static void save(Map<Character, Double> variables, double memory, List<String> history) {
+        Properties p = new Properties();
+        p.setProperty("memory", String.valueOf(memory));
+        for (Map.Entry<Character, Double> e : variables.entrySet()) {
+            p.setProperty("variable." + e.getKey(), String.valueOf(e.getValue()));
+        }
+        p.setProperty("history.count", String.valueOf(history.size()));
+        for (int i = 0; i < history.size(); i++) {
+            p.setProperty("history." + i, history.get(i));
+        }
+        try (Writer w = new OutputStreamWriter(new FileOutputStream(STATE_FILE), StandardCharsets.UTF_8)) {
+            p.store(w, "Scientific Graphing Calculator - saved state");
+        } catch (IOException ignored) {
+            // best-effort, see class comment
+        }
+    }
 }
