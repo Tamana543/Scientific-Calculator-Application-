@@ -41,7 +41,18 @@ public class Calculator extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
         // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.ico"))); 
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.png"))); 
+        // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.png")));
+        // java.net.URL iconURL = Calculator.class.getResource("/app_icon.png");
+        // if (iconURL != null) {
+        //     this.setIconImage(new ImageIcon(iconURL).getImage());
+        // } else {
+        //     System.out.println("DEBUG: Icon not found! Searching inside directory: " + 
+        //                     System.getProperty("user.dir"));
+        // } 
+        java.net.URL iconURL = getClass().getResource("/app_icon.png");
+        if (iconURL != null) {
+            setIconImage(new ImageIcon(iconURL).getImage());
+        }
         getContentPane().setBackground(Theme.APP_BG);
  
         JPanel wrapper = new JPanel(new BorderLayout());
