@@ -40,6 +40,8 @@ public class Calculator extends JFrame {
         setTitle("Scientific Graphing Calculator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
+        // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.ico"))); 
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.png"))); 
         getContentPane().setBackground(Theme.APP_BG);
  
         JPanel wrapper = new JPanel(new BorderLayout());
