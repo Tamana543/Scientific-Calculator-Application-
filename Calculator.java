@@ -19,8 +19,6 @@ public class Calculator extends JFrame {
     private double memory = 0, lastAnswer = 0;
     private boolean historyVisible = true;
     private final List<String> history = new ArrayList<>();
-    /** Stored A-F variables (ALPHA+digit to recall, SHIFT+ALPHA+digit to store). Shared by
-     *  reference with graphCanvas.variables so plotted functions see the latest values too. */
     private final Map<Character, Double> variables = new HashMap<>();
     private JTextField compDisplay;
     private GraphCanvas graphCanvas;
@@ -90,26 +88,13 @@ public class Calculator extends JFrame {
         updateHistoryPanel();
         installKeyBindings();
         pack();
-        // The packed size is the smallest layout we know renders correctly - don't allow
-        // shrinking below it (buttons overlapping or text clipping isn't "responsive", it's
-        // broken). Growing larger than this has no ceiling.
-        setMinimumSize(getSize());
+       setMinimumSize(getSize());
         setLocationRelativeTo(null);
     }
-
-    //  Keyboard input: lets every key below drive the same onButton()/onExe() logic the
-    //  on-screen buttons use, so typing works exactly like clicking - including ALPHA/SHIFT
-    //  interactions, since digit key presses go through the real onButton() switch.
     private void installKeyBindings() {
         JComponent root = getRootPane();
-        // WHEN_IN_FOCUSED_WINDOW: fires regardless of which button (if any) currently has
-        // keyboard focus, as long as the calculator window itself is the active window.
         InputMap im = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = root.getActionMap();
-
-        // Digits: both top-row number keys and numpad, each bound to the same cmd string
-        // used by the on-screen digit buttons ("0".."9") - this also means typing a digit
-        // while ALPHA is armed recalls/stores a variable, exactly like clicking would.
         for (int d = 0; d <= 9; d++) {
             String digit = String.valueOf(d);
             bindKey(im, am, KeyStroke.getKeyStroke((char) ('0' + d)), "kbd.digit" + d, () -> simulateButton(digit));
@@ -219,13 +204,7 @@ public class Calculator extends JFrame {
         cardLayout = new CardLayout();
         displayContainer = new JPanel(cardLayout);
         displayContainer.setPreferredSize(new Dimension(420, 170));
-        // No longer capped at 170px tall - this was the one thing stopping the display/graph
-        // area from getting its share of extra space when the window is enlarged. Every other
-        // row in the app already has an unbounded default maximumSize, so this just brings the
-        // display area in line with everything else instead of leaving it artificially frozen
-        // while the rest of the UI is free to grow.
         displayContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
- 
         compDisplay = new JTextField();
         compDisplay.setFont(new Font("Serif", Font.BOLD, 24));
         compDisplay.setEditable(false);
