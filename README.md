@@ -299,3 +299,102 @@ Core functionality should not depend on an internet connection.
 ### 2. Practicality
 
 Features should solve real problems rather than exist only as demonstrations.
+
+
+### 3. Accessibility
+
+The application should be understandable and usable by students with different levels of technical experience.
+
+### 4. Familiar interaction
+
+Keyboard shortcuts, memory functions, history, graphing, and calculator-style controls are designed to make the application feel familiar to anyone who has used a scientific calculator.
+
+### 5. Expandability
+
+The project is structured so that additional mathematical functionality can be added over time.
+
+---
+
+## Current Status
+
+The calculator currently includes:
+
+- [x] Basic calculator functionality
+- [x] ALPHA memory functions
+- [x] SHIFT functions
+- [x] Memory store and recall
+- [x] Keyboard input
+- [x] Calculation history
+- [x] History recall
+- [x] Sign toggle
+- [x] Percentage
+- [x] Clipboard copy
+- [x] Multiple functions on one graph
+- [x] Graph zoom and pan
+- [x] Graph trace/cursor
+- [x] Matrix mode
+- [x] Responsive/resizable layout
+- [x] Persistent application state
+- [x] Application icon
+
+### Final Packaging
+
+- [ ] Final Windows `.exe`
+- [ ] Final cleanup
+- [ ] Release preparation
+
+---
+
+## Future Improvements
+
+Possible future versions may include:
+
+- More advanced matrix operations
+- More scientific functions
+- Equation solving
+- Numerical integration
+- Numerical differentiation
+- More graphing controls
+- Improved expression parsing
+- Additional keyboard shortcuts
+- Exporting calculation history
+- Additional platform support
+- Improved accessibility options
+
+The project is intentionally designed so these features can be added gradually.
+
+---
+
+## Educational Purpose
+
+This project is not intended to replace a full commercial graphing calculator.
+
+Instead, it is a practical educational project created to explore how mathematical software works while building something that can be genuinely useful to students.
+
+It combines concepts from:
+
+- Object-oriented programming
+- GUI development
+- Event handling
+- Mathematical computation
+- Data persistence
+- File handling
+- Graphical rendering
+- User interaction
+- Software packaging
+
+---
+
+## Motivation
+
+There are students who have access to computers but cannot depend on having internet access whenever they need it.
+
+For those students, an offline application can make a small but meaningful difference.
+
+This project started as a Java programming project, but its purpose became bigger than simply completing an assignment or building a calculator.
+
+It is an attempt to create a tool that a student can install once and keep using:
+
+**at home, at school, in a library, or anywhere else — with or without internet access.**
+
+---
