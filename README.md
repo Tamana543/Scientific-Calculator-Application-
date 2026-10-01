@@ -169,3 +169,133 @@ The project is built primarily with Java.
 - **Java AWT** — keyboard, clipboard, and desktop interaction
 - **Java File I/O** — persistent application state
 - **Java Graphics** — function plotting and graph interaction
+
+### Application Architecture
+
+The application is organized around separate responsibilities for different parts of the calculator, including:
+
+- Calculator logic
+- Expression evaluation
+- UI components
+- Memory/state management
+- Graphing
+- Matrix operations
+- Keyboard handling
+- History management
+- Persistent state
+
+The goal is to keep the application maintainable as additional mathematical features are added.
+
+---
+
+## Getting Started
+
+### Requirements
+
+To run the project from source, you need:
+
+- Java Development Kit (JDK)
+- Java-compatible development environment
+- A desktop operating system capable of running Java applications
+
+A packaged executable is also provided for users who do not want to run the project directly from source.
+
+### Running from Source
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Tamana543/YOUR-REPOSITORY-NAME.git
+```
+
+Move into the project directory:
+
+```bash
+cd YOUR-REPOSITORY-NAME
+```
+
+Compile and run the application according to the project structure.
+
+If using an IDE such as IntelliJ IDEA, Eclipse, or VS Code, open the project and run the main application class.
+
+---
+
+## Windows Executable
+
+A Windows `.exe` version can be created using Java's packaging tools.
+
+The packaged application is intended to make the calculator easier to use for students who do not have Java development tools installed.
+
+The goal is simple:
+
+**Download → Install → Open → Calculate.**
+
+No browser and no internet connection are required for normal calculator use.
+
+---
+
+## Project Structure
+
+The project separates the calculator's major responsibilities so that individual features can be developed and maintained independently.
+
+A simplified structure looks like:
+
+```text
+ScientificCalculator/
+│
+├── src/
+│   ├── calculator/
+│   ├── graph/
+│   ├── matrix/
+│   ├── memory/
+│   ├── history/
+│   └── ui/
+│
+├── resources/
+│
+├── README.md
+│
+└── ...
+```
+
+> The exact structure may differ depending on the current version of the project.
+
+---
+
+## Screenshots
+
+Screenshots and demonstrations of the application can be added here.
+
+### Main Calculator
+
+_Add screenshot here_
+
+### Graph Mode
+
+_Add screenshot here_
+
+### Matrix Mode
+
+_Add screenshot here_
+
+### Memory / ALPHA / SHIFT
+
+_Add screenshot here_
+
+### Calculation History
+
+_Add screenshot here_
+
+---
+
+## Design Goals
+
+The project is built around several principles:
+
+### 1. Offline-first
+
+Core functionality should not depend on an internet connection.
+
+### 2. Practicality
+
+Features should solve real problems rather than exist only as demonstrations.
