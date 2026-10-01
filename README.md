@@ -51,3 +51,67 @@ The application keeps track of previous calculations.
 
 The calculator can be operated without relying entirely on mouse input.
 
+| Keyboard | Calculator |
+|---|---|
+| `0–9` | Numbers |
+| `+ - * /` | Operators |
+| `Enter` | `EXE` |
+| `Backspace` | `DEL` |
+| `Esc` | `AC` |
+
+### Graphing
+
+The GRAPH mode allows mathematical functions to be visualized directly inside the application.
+
+#### Multiple Functions
+
+Multiple functions can be plotted on the same graph, allowing users to compare functions visually.
+
+For example:
+
+```text
+f₁(x) = x²
+f₂(x) = 2x + 1
+```
+
+#### Zoom & Pan
+
+The graph can be explored interactively:
+
+- Scroll to zoom
+- Drag to move around the graph
+- Explore different regions of a function
+
+#### Trace Mode
+
+Clicking on a point of a plotted function displays its coordinates.
+
+```text
+x = ...
+y = ...
+```
+
+### Matrix Mode
+
+The MATRIX mode provides basic matrix functionality.
+
+Currently supported operations include:
+
+- 2×2 matrices
+- 3×3 matrices
+- Matrix entry
+- Matrix addition
+- Matrix multiplication
+- Determinant calculation
+
+### Persistent State
+
+The calculator can preserve important information between sessions.
+
+Stored information can include:
+
+- Memory variables
+- Stored values
+- Calculation history
+- Application state
+
