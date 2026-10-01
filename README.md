@@ -115,3 +115,57 @@ Stored information can include:
 - Calculation history
 - Application state
 
+This means users do not have to start from zero every time they reopen the application.
+
+### Responsive Interface
+
+The interface is designed to work with different window sizes rather than relying on one fixed resolution.
+
+The layout adapts when the application window is resized or maximized.
+
+### Clipboard Support
+
+Calculation results can be copied directly from the display to the system clipboard.
+
+This makes it easier to move results into:
+
+- Documents
+- Assignments
+- Notes
+- Other applications
+
+---
+
+## Why Offline?
+
+For many students, internet access is something that cannot always be assumed.
+
+An online calculator can be useful, but it becomes unavailable when there is:
+
+- No internet connection
+- Unstable connectivity
+- Limited mobile data
+- Restricted access to online services
+- A need to study somewhere without connectivity
+
+This application is designed around a different assumption:
+
+> **The calculator should work whether the internet is available or not.**
+
+Once installed, the application does not need an internet connection to perform its core functions.
+
+This makes it particularly useful for students who need a reliable mathematical tool while studying in environments where internet access is limited or inconsistent.
+
+---
+
+## Technology Stack
+
+The project is built primarily with Java.
+
+### Core Technologies
+
+- **Java**
+- **Java Swing** — graphical user interface
+- **Java AWT** — keyboard, clipboard, and desktop interaction
+- **Java File I/O** — persistent application state
+- **Java Graphics** — function plotting and graph interaction
