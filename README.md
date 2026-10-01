@@ -398,3 +398,32 @@ It is an attempt to create a tool that a student can install once and keep using
 **at home, at school, in a library, or anywhere else — with or without internet access.**
 
 ---
+
+## License
+
+This project is currently available for educational and personal use.
+
+_MIT_
+
+---
+
+## Author
+
+**Tamana Farzami**
+
+Computer Science / Software Development Student
+
+GitHub: [@Tamana543](https://github.com/Tamana543)
+
+---
+
+## A Note from the Developer
+
+I built this project while learning and experimenting with Java, but I wanted it to become more than a programming exercise.
+
+The idea behind it is simple: **students should be able to have useful educational tools even when internet access is not always available.**
+
+I hope this project can eventually be useful to girls and students who need an offline mathematical tool for their studies.
+
+There is still a lot that can be improved, and that is part of the point of the project. It is a work in progress, and I plan to continue learning from it and improving it over time.
+
