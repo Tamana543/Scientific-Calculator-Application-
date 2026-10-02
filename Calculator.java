@@ -46,8 +46,8 @@ import java.util.Map;public class Calculator extends JFrame {
         card.add(Box.createVerticalStrut(6));
         card.add(buildTopPillRow());
         card.add(buildSciRow(new String[]{"sin", "cos", "tan", "ln", "log", "sqrt"}));
-        card.add(buildSciRow(new String[]{"(", ")", "^", "pi", "e", "DEL", "\u00B1", "%"}));
-        card.add(buildSciRow(new String[]{"cbrt", "x^2", "x^-1", "10^x", "X", "Ans", "M+", "MR"}));
+        card.add(buildSciRow(new String[]{"(", ")", "^", "pi", "e", "cbrt", "\u00B1", "%"}));
+        card.add(buildSciRow(new String[]{"DEL", "x^2", "x^-1", "10^x", "X", "Ans", "M+", "MR"}));
         card.add(buildDigitGrid());
         card.add(buildExeBar());
         card.add(Box.createVerticalStrut(8));        JLabel credit = new JLabel("Develped By Tamana Farzami", SwingConstants.CENTER);
@@ -318,6 +318,9 @@ private void loadHistoryEntry(String rawText) {
             RoundedButton b;
             if (label.equals("DEL")) {
                 b = new RoundedButton(label, 10, Theme.KEY_BG, new Color(230, 120, 110), Theme.DEL_BORDER);
+                b.setFont(new Font("SansSerif", Font.BOLD, 10));
+            } else if (label.equals("x^-1") || label.equals("10^x")) {
+                b = new RoundedButton(label, 10, Theme.KEY_BG, Theme.GOLD, null);
                 b.setFont(new Font("SansSerif", Font.BOLD, 10));
             } else {
                 b = new RoundedButton(label, 10, Theme.KEY_BG, Theme.GOLD, null);
