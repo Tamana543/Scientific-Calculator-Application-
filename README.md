@@ -205,7 +205,7 @@ A packaged executable is also provided for users who do not want to run the proj
 Clone the repository:
 
 ```bash
-git clone https://github.com/Tamana543/YOUR-REPOSITORY-NAME.git
+git clone https://github.com/Tamana543/Scientific-Calculator-Application-
 ```
 
 Move into the project directory:
