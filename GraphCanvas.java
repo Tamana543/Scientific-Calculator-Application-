@@ -11,9 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-public class GraphCanvas extends JPanel {
+import java.util.Map;public class GraphCanvas extends JPanel {
     public static final class PlottedFunction {
         public final String text;
         public final Color color;
@@ -31,20 +29,14 @@ public class GraphCanvas extends JPanel {
             this.y = y;
             this.color = color;
         }
-    }
-
-    public String inputText = "";
+    }    public String inputText = "";
     public TracePoint tracePoint = null;
     public boolean useDegrees = false;
     public final List<PlottedFunction> functions = new ArrayList<>();
-    public Map<Character, Double> variables = new HashMap<>();
-
-    private static final double DEFAULT_X_MIN = -2 * Math.PI, DEFAULT_X_MAX = 2 * Math.PI;
+    public Map<Character, Double> variables = new HashMap<>();    private static final double DEFAULT_X_MIN = -2 * Math.PI, DEFAULT_X_MAX = 2 * Math.PI;
     private double xMin = DEFAULT_X_MIN, xMax = DEFAULT_X_MAX;
    private static final double MIN_SPAN = 0.02, MAX_SPAN = 2000;
-    private double lastYMin = Double.NaN, lastYMax = Double.NaN;
-
-    public GraphCanvas() {
+    private double lastYMin = Double.NaN, lastYMax = Double.NaN;    public GraphCanvas() {
         setBackground(Theme.DISPLAY_BG);
         MouseAdapter panAndReset = new MouseAdapter() {
             private int lastX;
@@ -60,7 +52,7 @@ public class GraphCanvas extends JPanel {
                 repaint();
             }
             @Override public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) resetView(); // double-click: back to the default window
+                if (e.getClickCount() == 2) resetView(); 
                 else if (e.getClickCount() == 1) handleTraceClick(e.getX(), e.getY());
             }
         };
@@ -70,7 +62,7 @@ public class GraphCanvas extends JPanel {
             if (getWidth() <= 0) return;
             double dataPerPixel = (xMax - xMin) / getWidth();
             double xAtCursor = xMin + e.getX() * dataPerPixel;
-            double factor = e.getWheelRotation() < 0 ? 0.9 : 1.1; // scroll up/away = zoom in
+            double factor = e.getWheelRotation() < 0 ? 0.9 : 1.1; 
             double newMin = xAtCursor - (xAtCursor - xMin) * factor;
             double newMax = xAtCursor + (xMax - xAtCursor) * factor;
             double newSpan = newMax - newMin;
@@ -93,9 +85,7 @@ public class GraphCanvas extends JPanel {
             return;
         }
         int w = getWidth(), h = getHeight();
-        double dataX = xMin + px * (xMax - xMin) / w;
-
-        PlottedFunction nearest = null;
+        double dataX = xMin + px * (xMax - xMin) / w;        PlottedFunction nearest = null;
         double nearestY = 0, nearestPixelDist = Double.MAX_VALUE;
         for (PlottedFunction pf : functions) {
             double y;
@@ -124,18 +114,14 @@ public class GraphCanvas extends JPanel {
         int decimals = av < 1 ? 2 : (av < 10 ? 1 : 0);
         String s = String.format("%." + decimals + "f", v);
         return s.equals("-0") ? "0" : s;
-    }
-
-    @Override
+    }    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int w = getWidth(), h = getHeight();
         g2.setColor(Theme.DISPLAY_BG);
-        g2.fillRect(0, 0, w, h);
-
-        if (functions.isEmpty()) {
+        g2.fillRect(0, 0, w, h);        if (functions.isEmpty()) {
             g2.setFont(new Font("Serif", Font.BOLD, 24));
             g2.setColor(Theme.GOLD_BRIGHT);
             String text = inputText.isEmpty() ? "" : "f(X) = " + inputText;
@@ -161,9 +147,7 @@ public class GraphCanvas extends JPanel {
             }
             pf.error = !curveValid;
             anyValid |= curveValid;
-        }
-
-        if (!anyValid) {
+        }        if (!anyValid) {
             g2.setColor(new Color(230, 120, 110));
             g2.setFont(new Font("SansSerif", Font.BOLD, 14));
             g2.drawString("Error plotting function", 14, h / 2);
@@ -175,13 +159,9 @@ public class GraphCanvas extends JPanel {
         yMin -= pad; yMax += pad;
         lastYMin = yMin;
         lastYMax = yMax;
-
-        // grid
         g2.setColor(new Color(50, 52, 60));
         for (int gx = 0; gx <= 10; gx++) g2.drawLine(gx * w / 10, 0, gx * w / 10, h);
         for (int gy = 0; gy <= 6; gy++) g2.drawLine(0, gy * h / 6, w, gy * h / 6);
-
-        // axes
         g2.setColor(new Color(110, 105, 90));
         int zeroXpix = (int) ((0 - xMin) / (xMax - xMin) * w);
         int zeroYpix = (int) (h - (0 - yMin) / (yMax - yMin) * h);
@@ -200,9 +180,7 @@ public class GraphCanvas extends JPanel {
             String label = formatAxisValue(yMax - gy / 6.0 * (yMax - yMin));
             int ly0 = gy * h / 6;
             g2.drawString(label, 2, Math.min(h - 2, ly0 + 4));
-        }
-
-        g2.setStroke(new BasicStroke(2.2f));
+        }        g2.setStroke(new BasicStroke(2.2f));
         for (int i = 0; i < functions.size(); i++) {
             PlottedFunction pf = functions.get(i);
             if (pf.error) continue;
@@ -223,9 +201,7 @@ public class GraphCanvas extends JPanel {
             g2.setColor(Color.WHITE);
             g2.fillOval(tx - 4, ty - 4, 8, 8);
             g2.setColor(tracePoint.color);
-            g2.drawOval(tx - 4, ty - 4, 8, 8);
-
-            String coord = "(" + formatAxisValue(tracePoint.x) + ", " + formatAxisValue(tracePoint.y) + ")";
+            g2.drawOval(tx - 4, ty - 4, 8, 8);            String coord = "(" + formatAxisValue(tracePoint.x) + ", " + formatAxisValue(tracePoint.y) + ")";
             g2.setFont(new Font("SansSerif", Font.BOLD, 12));
             FontMetrics cfm = g2.getFontMetrics();
             int cx = tx + 8;
@@ -233,18 +209,14 @@ public class GraphCanvas extends JPanel {
             int cy = (ty - 8 < 12) ? ty + 20 : ty - 8;
             g2.setColor(Color.WHITE);
             g2.drawString(coord, cx, cy);
-        }
-
-        g2.setFont(new Font("Serif", Font.PLAIN, 12));
+        }        g2.setFont(new Font("Serif", Font.PLAIN, 12));
         int ly = 16;
         for (PlottedFunction pf : functions) {
             g2.setColor(pf.error ? Theme.TEXT_DIM : pf.color);
             String label = "f(x) = " + CalcUtils.prettyPrint(pf.text) + (pf.error ? "  (error)" : "");
             g2.drawString(label, 10, ly);
             ly += 15;
-        }
-        
-        if (!inputText.isEmpty()) {
+        }        if (!inputText.isEmpty()) {
             g2.setFont(new Font("Serif", Font.BOLD, 16));
             g2.setColor(Theme.GOLD_BRIGHT);
             String typing = "f(X) = " + inputText;

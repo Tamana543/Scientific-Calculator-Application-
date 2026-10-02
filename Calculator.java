@@ -7,13 +7,11 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
- 
-public class Calculator extends JFrame {
-     private final StringBuilder expr = new StringBuilder();      // COMP-mode expression
-    private final StringBuilder funcExpr = new StringBuilder();  // GRAPH-mode f(X) expression
+import java.util.Map;public class Calculator extends JFrame {
+    private final StringBuilder expr = new StringBuilder();     
+    private final StringBuilder funcExpr = new StringBuilder();  
     private boolean isGraphMode = false;
-    private boolean useDegrees = false; // reference defaults to RAD
+    private boolean useDegrees = false;
     private boolean shiftMode = false;
     private boolean alphaMode = false;
     private double memory = 0, lastAnswer = 0;
@@ -29,40 +27,19 @@ public class Calculator extends JFrame {
     private JLabel angleValueLabel, calcModeValueLabel, historyCountLabel, historyToggleLabel;
     private JPanel historyListPanel;
     private JScrollPane historyScroll;
-     public Calculator() {
-       
-        memory = StatePersistence.load(variables, history);
-       
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> StatePersistence.save(variables, memory, history)));
-
-        setTitle("Scientific Graphing Calculator");
+     public Calculator() {        memory = StatePersistence.load(variables, history);        Runtime.getRuntime().addShutdownHook(new Thread(() -> StatePersistence.save(variables, memory, history)));        setTitle("Scientific Graphing Calculator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
-        // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.ico"))); 
-        // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/app_icon.png")));
-        // java.net.URL iconURL = Calculator.class.getResource("/app_icon.png");
-        // if (iconURL != null) {
-        //     this.setIconImage(new ImageIcon(iconURL).getImage());
-        // } else {
-        //     System.out.println("DEBUG: Icon not found! Searching inside directory: " + 
-        //                     System.getProperty("user.dir"));
-        // } 
         java.net.URL iconURL = getClass().getResource("/app_icon.png");
         if (iconURL != null) {
             setIconImage(new ImageIcon(iconURL).getImage());
         }
-        getContentPane().setBackground(Theme.APP_BG);
- 
-        JPanel wrapper = new JPanel(new BorderLayout());
+        getContentPane().setBackground(Theme.APP_BG);        JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(Theme.APP_BG);
-        wrapper.setBorder(new EmptyBorder(16, 16, 16, 16));
- 
-        JPanel card = new JPanel();
+        wrapper.setBorder(new EmptyBorder(16, 16, 16, 16));        JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Theme.APP_BG);
-        card.setBorder(BorderFactory.createLineBorder(Theme.PILL_BORDER, 1));
- 
-        card.add(buildStatusBar());
+        card.setBorder(BorderFactory.createLineBorder(Theme.PILL_BORDER, 1));        card.add(buildStatusBar());
         card.add(buildDisplayArea());
         card.add(buildInfoRow());
         card.add(buildHistorySection());
@@ -73,16 +50,12 @@ public class Calculator extends JFrame {
         card.add(buildSciRow(new String[]{"cbrt", "x^2", "x^-1", "10^x", "X", "Ans", "M+", "MR"}));
         card.add(buildDigitGrid());
         card.add(buildExeBar());
-        card.add(Box.createVerticalStrut(8));
- 
-        JLabel credit = new JLabel("Develped By Tamana Farzami", SwingConstants.CENTER);
+        card.add(Box.createVerticalStrut(8));        JLabel credit = new JLabel("Develped By Tamana Farzami", SwingConstants.CENTER);
         credit.setFont(new Font("Serif", Font.PLAIN, 12));
         credit.setForeground(Theme.TEXT_DIM);
         credit.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(credit);
-        card.add(Box.createVerticalStrut(6));
- 
-        wrapper.add(card, BorderLayout.CENTER);
+        card.add(Box.createVerticalStrut(6));        wrapper.add(card, BorderLayout.CENTER);
         add(wrapper);
         setMode(false);
         updateHistoryPanel();
@@ -110,15 +83,11 @@ public class Calculator extends JFrame {
         bindKey(im, am, KeyStroke.getKeyStroke(')'), "kbd.rparen", () -> simulateButton(")"));
         bindKey(im, am, KeyStroke.getKeyStroke('x'), "kbd.xLower", () -> simulateButton("X"));
         bindKey(im, am, KeyStroke.getKeyStroke('X'), "kbd.xUpper", () -> simulateButton("X"));
-
-        // Functional keys
         bindKey(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "kbd.enter", this::onExe);
         bindKey(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "kbd.backspace", () -> simulateButton("DEL"));
         bindKey(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "kbd.delete", () -> simulateButton("DEL"));
         bindKey(im, am, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "kbd.escape", () -> simulateButton("AC"));
-    }
-
-    private void bindKey(InputMap im, ActionMap am, KeyStroke ks, String name, Runnable action) {
+    }    private void bindKey(InputMap im, ActionMap am, KeyStroke ks, String name, Runnable action) {
         im.put(ks, name);
         am.put(name, new AbstractAction() {
             @Override public void actionPerformed(ActionEvent e) { action.run(); }
@@ -131,23 +100,19 @@ public class Calculator extends JFrame {
         JPanel bar = new JPanel(new BorderLayout());
         bar.setBackground(Theme.APP_BG);
         bar.setBorder(new EmptyBorder(8, 10, 8, 10));
-        bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
- 
-        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 0));
+        bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 0));
         left.setBackground(Theme.APP_BG);
         compTab = flatTextButton("COMP");
         graphTab = flatTextButton("GRAPH");
         compTab.addActionListener(e -> setMode(false));
         graphTab.addActionListener(e -> setMode(true));
         left.add(compTab);
-        left.add(graphTab);
- 
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
+        left.add(graphTab);        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         right.setBackground(Theme.APP_BG);
         angleValueLabel = smallLabel("RAD");
         JLabel deg = smallLabel("DEG");
         JLabel matrix = smallLabel("MATRIX");
-        matrix.setForeground(Theme.GOLD); // gold instead of dim - signals it's actually clickable now
+        matrix.setForeground(Theme.GOLD);
         matrix.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         matrix.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) { openMatrixDialog(); }
@@ -155,14 +120,10 @@ public class Calculator extends JFrame {
         right.add(angleValueLabel);
         right.add(deg);
         right.add(matrix);
-        right.add(decorativeIcon());
- 
-        bar.add(left, BorderLayout.WEST);
+        right.add(decorativeIcon());        bar.add(left, BorderLayout.WEST);
         bar.add(right, BorderLayout.EAST);
         return bar;
-    }
- 
-    private JButton flatTextButton(String text) {
+    }    private JButton flatTextButton(String text) {
         JButton b = new JButton(text);
         b.setFont(new Font("SansSerif", Font.BOLD, 12));
         b.setForeground(Theme.TEXT_DIM);
@@ -171,16 +132,13 @@ public class Calculator extends JFrame {
         b.setBorderPainted(false);
         b.setFocusPainted(false);
         return b;
-    }
- 
-    private JLabel smallLabel(String text) {
+    }    private JLabel smallLabel(String text) {
         JLabel l = new JLabel(text);
         l.setFont(new Font("SansSerif", Font.BOLD, 11));
         l.setForeground(Theme.TEXT_DIM);
         return l;
     }
      private JComponent decorativeIcon() {
-        // Purely cosmetic circular icon in the corner, matching the reference - not wired to any feature.
         JLabel icon = new JLabel("\u223F", SwingConstants.CENTER) {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -198,8 +156,6 @@ public class Calculator extends JFrame {
         icon.setPreferredSize(new Dimension(22, 22));
         return icon;
     }
- 
-    //  Display area: COMP text field or GRAPH canvas, swapped via CardLayout 
     private JPanel buildDisplayArea() {
         cardLayout = new CardLayout();
         displayContainer = new JPanel(cardLayout);
@@ -217,16 +173,10 @@ public class Calculator extends JFrame {
         compDisplay.setToolTipText("Click to copy");
         compDisplay.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) { copyDisplayToClipboard(); }
-        });
- 
-        graphCanvas = new GraphCanvas();
+        });        graphCanvas = new GraphCanvas();
         graphCanvas.useDegrees = useDegrees;
-        graphCanvas.variables = variables;
- 
-        displayContainer.add(compDisplay, "COMP");
-        displayContainer.add(graphCanvas, "GRAPH");
- 
-        JPanel holder = new JPanel(new BorderLayout());
+        graphCanvas.variables = variables;        displayContainer.add(compDisplay, "COMP");
+        displayContainer.add(graphCanvas, "GRAPH");        JPanel holder = new JPanel(new BorderLayout());
         holder.setBackground(Theme.APP_BG);
         holder.add(displayContainer, BorderLayout.CENTER);
         return holder;
@@ -234,12 +184,8 @@ public class Calculator extends JFrame {
      private JPanel buildInfoRow() {
         JPanel row = new JPanel(new GridLayout(1, 3));
         row.setBackground(Theme.APP_BG);
-        row.setBorder(new EmptyBorder(10, 10, 10, 10));
- 
-        row.add(infoCell("ANGLE MODE", angleValueLabel = boldValueLabel("RAD")));
-        row.add(infoCell("CALC MODE", calcModeValueLabel = boldValueLabel("COMP")));
- 
-        JPanel historyCell = new JPanel();
+        row.setBorder(new EmptyBorder(10, 10, 10, 10));        row.add(infoCell("ANGLE MODE", angleValueLabel = boldValueLabel("RAD")));
+        row.add(infoCell("CALC MODE", calcModeValueLabel = boldValueLabel("COMP")));        JPanel historyCell = new JPanel();
         historyCell.setLayout(new BoxLayout(historyCell, BoxLayout.Y_AXIS));
         historyCell.setBackground(Theme.APP_BG);
         JPanel captionRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
@@ -257,9 +203,7 @@ public class Calculator extends JFrame {
         historyCountLabel = boldValueLabel("0 ITEMS");
         historyCell.add(captionRow);
         historyCell.add(historyCountLabel);
-        row.add(historyCell);
- 
-        return row;
+        row.add(historyCell);        return row;
     }
      private JPanel infoCell(String caption, JLabel valueLabel) {
         JPanel cell = new JPanel();
@@ -268,9 +212,7 @@ public class Calculator extends JFrame {
         cell.add(smallLabel(caption));
         cell.add(valueLabel);
         return cell;
-    }
- 
-    private JLabel boldValueLabel(String text) {
+    }    private JLabel boldValueLabel(String text) {
         JLabel l = new JLabel(text);
         l.setFont(new Font("SansSerif", Font.BOLD, 14));
         l.setForeground(Theme.GOLD_BRIGHT);
@@ -279,23 +221,15 @@ public class Calculator extends JFrame {
     private JPanel buildHistorySection() {
         JPanel wrap = new JPanel(new BorderLayout());
         wrap.setBackground(Theme.APP_BG);
-        wrap.setBorder(new EmptyBorder(0, 10, 10, 10));
- 
-        JLabel header = smallLabel("CALCULATION HISTORY");
-        header.setBorder(new EmptyBorder(0, 0, 6, 0));
- 
-        historyListPanel = new JPanel();
+        wrap.setBorder(new EmptyBorder(0, 10, 10, 10));        JLabel header = smallLabel("CALCULATION HISTORY");
+        header.setBorder(new EmptyBorder(0, 0, 6, 0));        historyListPanel = new JPanel();
         historyListPanel.setLayout(new BoxLayout(historyListPanel, BoxLayout.Y_AXIS));
-        historyListPanel.setBackground(Theme.HISTORY_BG);
- 
-        historyScroll = new JScrollPane(historyListPanel);
+        historyListPanel.setBackground(Theme.HISTORY_BG);        historyScroll = new JScrollPane(historyListPanel);
         historyScroll.setBorder(BorderFactory.createLineBorder(Theme.PILL_BORDER, 1));
         historyScroll.setPreferredSize(new Dimension(420, 70));
         historyScroll.getViewport().setBackground(Theme.HISTORY_BG);
         historyScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        historyScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
- 
-        wrap.add(header, BorderLayout.NORTH);
+        historyScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);        wrap.add(header, BorderLayout.NORTH);
         wrap.add(historyScroll, BorderLayout.CENTER);
         return wrap;
     }
@@ -317,7 +251,7 @@ public class Calculator extends JFrame {
             historyListPanel.add(empty);
         } else {
             for (int i = history.size() - 1; i >= 0; i--) {
-        String text = history.get(i); // captured per-iteration, safe to use in the listener below
+        String text = history.get(i);
         JLabel entry = new JLabel(text);
         entry.setFont(new Font("SansSerif", Font.PLAIN, 12));
         entry.setForeground(Theme.DIGIT_FG);
@@ -342,12 +276,7 @@ private void loadHistoryEntry(String rawText) {
     int eq = rawText.indexOf(" = ");
     if (eq < 0) return;
     String left = rawText.substring(0, eq);
-    String right = rawText.substring(eq + 3);
-
-    if (left.equals("f(X)")) {
-        // Loads the text back into the input for editing; the curve(s) already on the graph
-        // are untouched. Pressing EXE again adds this (possibly edited) version as a new curve
-        // rather than replacing the original - consistent with EXE always adding in GRAPH mode.
+    String right = rawText.substring(eq + 3);    if (left.equals("f(X)")) {
         funcExpr.setLength(0);
         funcExpr.append(unPrettyPrint(right));
         setMode(true);
@@ -364,33 +293,23 @@ private void loadHistoryEntry(String rawText) {
     private JPanel buildTopPillRow() {
         JPanel row = new JPanel(new GridLayout(1, 4, 6, 0));
         row.setBackground(Theme.APP_BG);
-        row.setBorder(new EmptyBorder(4, 10, 4, 10));
- 
-        shiftButton = pillButton("SHIFT");
+        row.setBorder(new EmptyBorder(4, 10, 4, 10));        shiftButton = pillButton("SHIFT");
         alphaButton = pillButton("ALPHA");
         JButton mode = pillButton("MODE");
-        degRadButton = pillButton("RAD");
- 
-        shiftButton.addActionListener(e -> toggleShift());
+        degRadButton = pillButton("RAD");        shiftButton.addActionListener(e -> toggleShift());
         alphaButton.addActionListener(e -> toggleAlpha());
         mode.addActionListener(e -> setMode(!isGraphMode));
-        degRadButton.addActionListener(e -> toggleDegRad());
- 
-        row.add(shiftButton);
+        degRadButton.addActionListener(e -> toggleDegRad());        row.add(shiftButton);
         row.add(alphaButton);
         row.add(mode);
         row.add(degRadButton);
         return row;
-    }
- 
-    private JButton pillButton(String text) {
+    }    private JButton pillButton(String text) {
         RoundedButton b = new RoundedButton(text, 999, Theme.PILL_BG, Theme.GOLD, Theme.PILL_BORDER);
         b.setFont(new Font("SansSerif", Font.BOLD, 11));
         b.setPreferredSize(new Dimension(80, 30));
         return b;
     }
- 
-    //  Scientific function rows (variable column count per row) 
     private JPanel buildSciRow(String[] labels) {
         JPanel row = new JPanel(new GridLayout(1, labels.length, 4, 0));
         row.setBackground(Theme.APP_BG);
@@ -399,8 +318,6 @@ private void loadHistoryEntry(String rawText) {
             RoundedButton b;
             if (label.equals("DEL")) {
                 b = new RoundedButton(label, 10, Theme.KEY_BG, new Color(230, 120, 110), Theme.DEL_BORDER);
-                // Smaller, non-italic font so "DEL" fits comfortably even in an 8-column row,
-                // instead of needing a whole extra row (which pushed the window height too tall).
                 b.setFont(new Font("SansSerif", Font.BOLD, 10));
             } else {
                 b = new RoundedButton(label, 10, Theme.KEY_BG, Theme.GOLD, null);
@@ -415,9 +332,7 @@ private void loadHistoryEntry(String rawText) {
             row.add(b);
         }
         return row;
-    }
- 
-    //  Digit grid: 7 8 9 /, 4 5 6 x, 1 2 3 -, 0 . AC + 
+    } 
     private JPanel buildDigitGrid() {
         String[][] rows = {
             {"7", "8", "9", "\u00F7"},
@@ -462,8 +377,6 @@ private void loadHistoryEntry(String rawText) {
         wrap.add(exe, BorderLayout.CENTER);
         return wrap;
     }
- 
-    //  Mode / state management 
     private void setMode(boolean graph) {
         isGraphMode = graph;
         cardLayout.show(displayContainer, graph ? "GRAPH" : "COMP");
@@ -475,45 +388,33 @@ private void loadHistoryEntry(String rawText) {
         if (mPlusButton != null) mPlusButton.setEnabled(!graph);
         if (mRecallButton != null) mRecallButton.setEnabled(!graph);
         refreshDisplay();
-    }
- 
-    private void toggleDegRad() {
+    }    private void toggleDegRad() {
         useDegrees = !useDegrees;
         String text = useDegrees ? "DEG" : "RAD";
         degRadButton.setText(text);
         angleValueLabel.setText(text);
-        graphCanvas.useDegrees = useDegrees; // keep GraphCanvas's own copy in sync
+        graphCanvas.useDegrees = useDegrees; 
         if (!graphCanvas.functions.isEmpty()) graphCanvas.repaint();
-    }
- 
-    private void toggleShift() {
+    }    private void toggleShift() {
         shiftMode = !shiftMode;
         ((RoundedButton) shiftButton).setActive(shiftMode);
-    }
-
-    private void toggleAlpha() {
+    }    private void toggleAlpha() {
         alphaMode = !alphaMode;
         ((RoundedButton) alphaButton).setActive(alphaMode);
-    }
-
-    /** Copies whatever is currently shown on the COMP display to the system clipboard,
+    }    /** Copies whatever is currently shown on the COMP display to the system clipboard,
      *  with a brief gold flash on the display as feedback that the copy happened. */
     private void copyDisplayToClipboard() {
         String text = compDisplay.getText();
         if (text == null || text.isEmpty()) return;
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(text), null);
         flashCopyFeedback();
-    }
-
-    private void flashCopyFeedback() {
+    }    private void flashCopyFeedback() {
         Color original = compDisplay.getBackground();
         compDisplay.setBackground(Theme.GOLD.darker());
         Timer flash = new Timer(150, e -> compDisplay.setBackground(original));
         flash.setRepeats(false);
         flash.start();
-    }
-
-    /** Opens MATRIX mode as its own small dialog rather than a third tab inside the main
+    }    /** Opens MATRIX mode as its own small dialog rather than a third tab inside the main
      *  window - deliberately kept separate so it can never affect the main calculator's
      *  already-tight fixed layout (see the earlier zoom/pan-era lesson about window height
      *  getting cut off). A fresh MatrixPanel each time gives a clean slate on every open. */
@@ -527,36 +428,28 @@ private void loadHistoryEntry(String rawText) {
         dialog.setLocationRelativeTo(this);
         SwingUtilities.invokeLater(panel::focusFirstCell);
         dialog.setVisible(true);
-    }
- 
-    private StringBuilder active() { return isGraphMode ? funcExpr : expr; }
- 
-    private void refreshDisplay() {
+    }    private StringBuilder active() { return isGraphMode ? funcExpr : expr; }    private void refreshDisplay() {
         if (isGraphMode) {
             graphCanvas.inputText = CalcUtils.prettyPrint(funcExpr.toString());
             graphCanvas.repaint();
         } else {
             compDisplay.setText(CalcUtils.prettyPrint(expr.toString()));
         }
-    }
- 
-    private void onButton(ActionEvent e) {
+    }    private void onButton(ActionEvent e) {
         String cmd = e.getActionCommand();
         StringBuilder buf = active();
         boolean isAlphaDigit = cmd.length() == 1 && cmd.charAt(0) >= '1' && cmd.charAt(0) <= '6';
         if (alphaMode && !isAlphaDigit) {
             alphaMode = false;
             ((RoundedButton) alphaButton).setActive(false);
-        }
-
-        switch (cmd) {
+        }        switch (cmd) {
             case "1", "2", "3", "4", "5", "6" -> {
                 if (alphaMode) {
-                    char letter = (char) ('A' + (cmd.charAt(0) - '1')); // 1->A ... 6->F
+                    char letter = (char) ('A' + (cmd.charAt(0) - '1')); 
                     if (shiftMode && !isGraphMode) {
                         storeVariable(letter, buf);
                     } else {
-                        buf.append(letter); // RECALL: insert the variable name
+                        buf.append(letter); 
                     }
                     alphaMode = false;
                     ((RoundedButton) alphaButton).setActive(false);
@@ -567,14 +460,11 @@ private void loadHistoryEntry(String rawText) {
                 }
             }
             case "AC" -> {
-                // In GRAPH mode: first AC clears whatever's currently being typed (normal
-                // behavior); a second AC, pressed with nothing left to clear, wipes every
-                // plotted curve - a double-tap-to-clear-all pattern.
                 boolean bufWasEmpty = buf.length() == 0;
                 buf.setLength(0);
                 if (isGraphMode && bufWasEmpty) {
                     graphCanvas.functions.clear();
-                    graphCanvas.resetView(); // also un-zoom/un-pan back to the default window
+                    graphCanvas.resetView(); 
                 }
                 refreshDisplay();
             }
@@ -597,17 +487,13 @@ private void loadHistoryEntry(String rawText) {
             case "\u00D7" -> { buf.append("*"); refreshDisplay(); }
             case "\u00B1" -> toggleSign();
             case "%" -> applyPercent();
-            default -> { buf.append(cmd); refreshDisplay(); } // digits, '.', '+', '-'
+            default -> { buf.append(cmd); refreshDisplay(); }
         }
     }
     private void toggleSign() {
     StringBuilder buf = active();
     String s = buf.toString();
-    if (s.isEmpty()) return;
-
-    if (s.equals("-")) { buf.setLength(0); refreshDisplay(); return; }
-
-    // Already wrapped as "(-NUMBER)" at the end? Unwrap it back to positive.
+    if (s.isEmpty()) return;    if (s.equals("-")) { buf.setLength(0); refreshDisplay(); return; }
     if (s.endsWith(")")) {
         int closeIdx = s.length() - 1;
         int j = closeIdx - 1;
@@ -617,18 +503,14 @@ private void loadHistoryEntry(String rawText) {
             refreshDisplay();
             return;
         }
-    }
-
-    int start = s.length();
+    }    int start = s.length();
     while (start > 0 && (Character.isDigit(s.charAt(start - 1)) || s.charAt(start - 1) == '.')) start--;
-    if (start == s.length()) { buf.append('-'); refreshDisplay(); return; } // nothing typed yet - start a negative
-
-    if (start == 1 && s.charAt(0) == '-') {
-        buf.deleteCharAt(0); // bare leading "-3" -> "3"
+    if (start == s.length()) { buf.append('-'); refreshDisplay(); return; }     if (start == 1 && s.charAt(0) == '-') {
+        buf.deleteCharAt(0); 
     } else if (start == 0) {
-        buf.insert(0, '-'); // bare "3" -> "-3"
+        buf.insert(0, '-'); 
     } else {
-        buf.insert(start, "(-").append(")"); // "5*3" -> "5*(-3)"
+        buf.insert(start, "(-").append(")"); 
     }
     refreshDisplay();
 }
@@ -637,14 +519,10 @@ private void applyPercent() {
     String s = buf.toString();
     int start = s.length();
     while (start > 0 && (Character.isDigit(s.charAt(start - 1)) || s.charAt(start - 1) == '.')) start--;
-    if (start == s.length()) return; // buffer doesn't end in a number - nothing to convert
+    if (start == s.length()) return;
     buf.replace(start, s.length(), "(" + s.substring(start) + "/100)");
     refreshDisplay();
 }
-
-    /** Evaluates the current buffer (or falls back to lastAnswer if empty) and stores the result
-     *  into the given A-F variable slot. Called from ALPHA+SHIFT+digit. COMP mode only - a graph
-     *  function has no single value to store. */
     private void storeVariable(char letter, StringBuilder buf) {
         double value;
         try {
@@ -663,13 +541,9 @@ private void applyPercent() {
         buf.setLength(0);
         shiftMode = false;
         ((RoundedButton) shiftButton).setActive(false);
-    }
- 
-    private void onExe() {
+    }    private void onExe() {
         if (isGraphMode) plotFunction(); else calculate();
-    }
- 
-    private void calculate() {
+    }    private void calculate() {
         if (expr.length() == 0) return;
         try {
             String exprText = expr.toString();
@@ -687,24 +561,16 @@ private void applyPercent() {
             compDisplay.setText("Error" + (ex.getMessage() != null ? ": " + ex.getMessage() : ""));
             expr.setLength(0);
         }
-    }
- 
-    private void plotFunction() {
+    }    private void plotFunction() {
         if (funcExpr.length() == 0) return;
-        // Adds a new curve rather than replacing the old one, so f1(X), f2(X), etc. all stay
-        // visible together. Color cycles through Theme.GRAPH_COLORS by plot order.
         Color color = Theme.GRAPH_COLORS[graphCanvas.functions.size() % Theme.GRAPH_COLORS.length];
         graphCanvas.functions.add(new GraphCanvas.PlottedFunction(funcExpr.toString(), color));
         history.add("f(X) = " + CalcUtils.prettyPrint(funcExpr.toString()));
         updateHistoryPanel();
-        // Clear the input so the next thing typed starts a fresh function instead of editing
-        // the one that was just plotted - the plotted curve itself is unaffected by this.
         funcExpr.setLength(0);
         graphCanvas.repaint();
         refreshDisplay();
-    }
- 
-    private void addToMemory() {
+    }    private void addToMemory() {
         if (expr.length() == 0) return;
         try {
             double val = new Evaluator(expr.toString(), useDegrees, 0, variables).evaluate();
@@ -718,14 +584,7 @@ private void applyPercent() {
             compDisplay.setText("Error");
             expr.setLength(0);
         }
-    }
-      // rmdir /s /q Calculator
-    // javac -d . CalculatorApp\*.java
-    // "C:\Program Files\Java\jdk-19\bin\jar" cvfm input_dir\Calculator.jar manifest.txt CalculatorApp
-    // "C:\Program Files\Java\jdk-19\bin\jpackage" --input input_dir --name "Calculator" --main-jar Calculator.jar --main-class CalculatorApp.Calculator --type app-image
-    // toDo : fix the funcitonality mistakes and add the hover
- 
-    public static void main(String[] args) {
+    }    public static void main(String[] args) {
         System.setProperty("awt.useSystemAAFontSettings", "gasp");
         System.setProperty("swing.aatext", "true");
         SwingUtilities.invokeLater(() -> new Calculator().setVisible(true));

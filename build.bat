@@ -20,7 +20,9 @@ mkdir input_dir
 jar cvfm input_dir\Calculator.jar manifest.txt *.class
 
 echo Building installer...
-jpackage --input input_dir --name "Scientific Calculator" --main-jar Calculator.jar --main-class Calculator --icon calculator.ico --type exe --win-shortcut --win-menu --app-version 1.0
+jpackage --input input_dir --name "Scientific Calculator" --main-jar Calculator.jar --main-class Calculator --icon calculator.ico --type exe --win-shortcut --win-menu --app-version 1.2
+
+@REM  change the these part app versian name to create the new versians :)
 
 echo Cleaning up build artifacts...
 rmdir /s /q input_dir
