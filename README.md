@@ -6,7 +6,7 @@ A fully offline scientific calculator built with Java, designed to provide stude
 
 ## Download
 
-The latest Windows installer is available on the [Releases](ttps://github.com/Tamana543/Scientific-Calculator-Application-) page.
+The latest Windows installer is available on the [Releases](https://github.com/Tamana543/Scientific-Calculator-Application-/releases/tag/V.1.2.0) page.
 
 Download the `.exe`, run it, and follow the installer — no Java installation required, the runtime is bundled in.
 
@@ -334,7 +334,7 @@ The calculator currently includes:
 
 - [x] Final Windows `.exe`
 - [x] Final cleanup
-- [ ] Release preparation (publish on GitHub Releases)
+- [x] Release preparation (publish on GitHub Releases)
 
 ---
 
