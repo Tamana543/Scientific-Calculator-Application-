@@ -4,6 +4,14 @@ A fully offline scientific calculator built with Java, designed to provide stude
 
 > **Built with a simple idea:** access to useful educational tools should not depend on having internet access every day.
 
+## Download
+
+The latest Windows installer is available on the [Releases](ttps://github.com/Tamana543/Scientific-Calculator-Application-) page.
+
+Download the `.exe`, run it, and follow the installer — no Java installation required, the runtime is bundled in.
+
+> **Note:** this app isn't digitally signed (a code-signing certificate costs money, which isn't realistic for a student project), so Windows SmartScreen may show a *"Windows protected your PC"* warning on first run. This is normal for small independent projects — click **More info → Run anyway** to continue.
+
 ## About the Project
 
 This project is a desktop scientific calculator developed in Java with the goal of creating a practical mathematical tool that can be used **completely offline**.
@@ -211,54 +219,60 @@ git clone https://github.com/Tamana543/Scientific-Calculator-Application-
 Move into the project directory:
 
 ```bash
-cd YOUR-REPOSITORY-NAME
+cd Scientific-Calculator-Application-
 ```
 
 Compile and run the application according to the project structure.
 
-If using an IDE such as IntelliJ IDEA, Eclipse, or VS Code, open the project and run the main application class.
+```bash
+java Calculator
+```
+
+
+If using an IDE such as IntelliJ IDEA, Eclipse, or VS Code, open the project folder and run `Calculator.java` as the main class.
 
 ---
 
-## Windows Executable
+### Building the Windows Installer Yourself
 
-A Windows `.exe` version can be created using Java's packaging tools.
+A `build.bat` script in the project root automates the full rebuild (compile → jar → installer):
 
-The packaged application is intended to make the calculator easier to use for students who do not have Java development tools installed.
+```bash
+build.bat
+```
 
-The goal is simple:
+This produces a `Scientific Calculator-X.X.exe` in the project root, using `manifest.txt` for the jar manifest and `calculator.ico` for the app icon.
 
-**Download → Install → Open → Calculate.**
-
-No browser and no internet connection are required for normal calculator use.
+Requirements for this step specifically:
+- A JDK that includes `jpackage` (JDK 17+)
+- The [WiX Toolset](https://wixtoolset.org/) installed and on your system `PATH` (required by `jpackage` to build a Windows `.exe` installer)
 
 ---
 
 ## Project Structure
 
-The project separates the calculator's major responsibilities so that individual features can be developed and maintained independently.
-
-A simplified structure looks like:
+The project currently keeps all source files flat in the project root, using Java's default (unnamed) package rather than nested subfolders:
 
 ```text
-ScientificCalculator/
+Scientific-Calculator-Application/
 │
-├── src/
-│   ├── calculator/
-│   ├── graph/
-│   ├── matrix/
-│   ├── memory/
-│   ├── history/
-│   └── ui/
+├── Calculator.java        # Main application window, UI layout, and event wiring
+├── Evaluator.java         # Expression parsing and evaluation
+├── GraphCanvas.java       # Graphing: plotting, zoom/pan, trace mode
+├── MatrixPanel.java       # Matrix mode (entry, add, multiply, determinant)
+├── RoundedButton.java     # Custom styled button component used throughout the UI
+├── StatePersistence.java  # Saves/restores memory, variables, and history between runs
+├── Theme.java             # Shared colors and styling constants
+├── CalcUtils.java         # Small shared formatting helpers
 │
-├── resources/
-│
-├── README.md
-│
-└── ...
+├── manifest.txt           # Jar manifest (declares the main class)
+├── calculator.ico         # Application icon used by the packaged installer
+├── build.bat              # One-command rebuild: compile -> jar -> installer
+├── LICENSE
+└── README.md
 ```
 
-> The exact structure may differ depending on the current version of the project.
+> As the project grows, this may be reorganized into subfolders/packages - this reflects the current structure.
 
 ---
 
