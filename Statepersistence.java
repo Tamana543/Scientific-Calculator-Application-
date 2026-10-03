@@ -9,19 +9,23 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;/**
- * Saves and restores the calculator's memory value, A-F variables, and calculation history
- * between runs, using a small .properties file in the user's home directory (works no matter
- * where the app is installed, unlike writing next to the jar - Program Files, for instance,
- * often isn't writable by a normal user).
- * Saving happens via a JVM shutdown hook, which fires on
- * any normal exit path - closing the window, closing from the taskbar, etc. It does NOT cover
- * a hard crash or the process being killed; that's an accepted gap for "save on close", not an
- * attempt at continuous autosave.
- */
-public class StatePersistence { 
-    private static final File STATE_FILE =
-        new File(System.getProperty("user.home"), ".graphing_calculator_state.properties");    private StatePersistence() {}     public static void save(Map<Character, Double> variables, double memory, List<String> history) {
+import java.util.Properties;
+// local stoarage 
+public class StatePersistence {
+    private static final File STATE_FILE = resolveStateFile();
+
+    private static File resolveStateFile() {
+        String localAppData = System.getenv("LOCALAPPDATA");
+        File baseDir = (localAppData != null && !localAppData.isBlank())
+            ? new File(localAppData, "ScientificGraphingCalculator")
+            : new File(System.getProperty("user.home"), ".scientific_graphing_calculator");
+        if (!baseDir.exists()) baseDir.mkdirs();
+        return new File(baseDir, "state.properties");
+    }
+
+    private StatePersistence() {}
+
+    public static void save(Map<Character, Double> variables, double memory, List<String> history) {
         Properties p = new Properties();
         p.setProperty("memory", String.valueOf(memory));
         for (Map.Entry<Character, Double> e : variables.entrySet()) {
@@ -35,29 +39,42 @@ public class StatePersistence {
             p.store(w, "Scientific Graphing Calculator - saved state");
         } catch (IOException ignored) {
         }
-    }    public static double load(Map<Character, Double> variables, List<String> history) {
-        if (!STATE_FILE.exists()) return 0.0;        Properties p = new Properties();
+    }
+
+    public static double load(Map<Character, Double> variables, List<String> history) {
+        if (!STATE_FILE.exists()) return 0.0;
+
+        Properties p = new Properties();
         try (Reader r = new InputStreamReader(new FileInputStream(STATE_FILE), StandardCharsets.UTF_8)) {
             p.load(r);
         } catch (IOException ex) {
             return 0.0;
-        }        double memory = 0.0;
+        }
+
+        double memory = 0.0;
         try {
             memory = Double.parseDouble(p.getProperty("memory", "0"));
-        } catch (NumberFormatException ignored) {        }        for (char c = 'A'; c <= 'F'; c++) {
+        } catch (NumberFormatException ignored) {
+        }
+
+        for (char c = 'A'; c <= 'F'; c++) {
             String v = p.getProperty("variable." + c);
             if (v == null) continue;
             try {
                 variables.put(c, Double.parseDouble(v));
             } catch (NumberFormatException ignored) {
             }
-        }        try {
+        }
+
+        try {
             int count = Integer.parseInt(p.getProperty("history.count", "0"));
             for (int i = 0; i < count; i++) {
                 String entry = p.getProperty("history." + i);
                 if (entry != null) history.add(entry);
             }
         } catch (NumberFormatException ignored) {
-        }        return memory;
+        }
+
+        return memory;
     }
 }
