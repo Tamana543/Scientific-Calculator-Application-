@@ -277,7 +277,12 @@ Scientific-Calculator-Application/
 ---
 
 ## Screenshots
-![Project Overview](Pro_1.png)!|| [Project overview ](pro_2.png)
+<p float="left">
+  <img src="Pro_1.png" width="48%" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="pro_2.png" width="35%" />
+</p>
+
+
 
 
 
