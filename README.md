@@ -277,30 +277,9 @@ Scientific-Calculator-Application/
 ---
 
 ## Screenshots
+![Project Overview](Pro_1.png)!|| [Project overview ](pro_2.png)
 
-Screenshots and demonstrations of the application can be added here.
 
-### Main Calculator
-
-_Add screenshot here_
-
-### Graph Mode
-
-_Add screenshot here_
-
-### Matrix Mode
-
-_Add screenshot here_
-
-### Memory / ALPHA / SHIFT
-
-_Add screenshot here_
-
-### Calculation History
-
-_Add screenshot here_
-
----
 
 ## Design Goals
 
@@ -353,9 +332,9 @@ The calculator currently includes:
 
 ### Final Packaging
 
-- [ ] Final Windows `.exe`
-- [ ] Final cleanup
-- [ ] Release preparation
+- [x] Final Windows `.exe`
+- [x] Final cleanup
+- [ ] Release preparation (publish on GitHub Releases)
 
 ---
 
@@ -432,8 +411,6 @@ GitHub: [@Tamana543](https://github.com/Tamana543)
 ---
 
 ## A Note from the Developer
-
-I built this project while learning and experimenting with Java, but I wanted it to become more than a programming exercise.
 
 The idea behind it is simple: **students should be able to have useful educational tools even when internet access is not always available.**
 
